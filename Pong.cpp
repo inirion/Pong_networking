@@ -14,6 +14,7 @@ void Pong::update()
 		if (Config::isServer) {
 			sf::Packet packet;
 			packet << *player1;
+			packet << *ball;
 			client.Send(packet);
 		}
 		else {
@@ -24,14 +25,14 @@ void Pong::update()
 		
 	}
 
-	player1->update();
+	
 	ball->update();
 	Collision();
 	if (Config::isServer) {
-
+		player1->update();
 	}
 	else {
-
+		player2->update();
 	}
 
 	switch (client.Recive()) {
@@ -44,6 +45,8 @@ void Pong::update()
 		else {
 			player1->readFromPacket(client.getPacket());
 			player1->movePaddle();
+			ball->readFromPacket(client.getPacket());
+			ball->moveBall();
 		}
 		
 	}

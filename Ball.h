@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include <SFML\Network.hpp>
+#include <iostream>
 
 class Ball
 {
@@ -23,6 +25,16 @@ public:
 
 	inline sf::Vector2f getPosition() { return position; }
 	inline void setPosition(sf::Vector2f pos) { this->position = pos; }
+
+	friend sf::Packet& operator <<(sf::Packet& packet, Ball& character) {
+		return packet << (float)character.getPosition().x << (float)character.getPosition().y;
+	}
+
+	inline void moveBall() { setPosition(position); }
+	void readFromPacket(sf::Packet& packet) {
+		packet >> this->position.x >> this->position.y;
+		std::cout << this->position.x << " " << this->position.y << std::endl;
+	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void update();
