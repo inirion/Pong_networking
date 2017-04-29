@@ -52,6 +52,7 @@ sf::Socket::Status Client::Recive()
 				throw "Couldn't connect socket =(";
 			}
 		}
+		tcpSocket.setBlocking(false);
 	}
 }
 
