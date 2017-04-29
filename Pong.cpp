@@ -26,10 +26,12 @@ void Pong::update()
 	}
 
 	
-	ball->update();
-	Collision();
+	
+	
 	if (Config::isServer) {
 		player1->update();
+		ball->update();
+		Collision();
 	}
 	else {
 		player2->update();
