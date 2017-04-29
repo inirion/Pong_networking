@@ -30,7 +30,7 @@ public:
 		return packet << (float)character.getPosition().x << (float)character.getPosition().y;
 	}
 
-	inline void moveBall() { setPosition(position); }
+	inline void moveBall() { ball.setPosition(position); }
 	void readFromPacket(sf::Packet& packet) {
 		packet >> this->position.x >> this->position.y;
 		std::cout << this->position.x << " " << this->position.y << std::endl;
