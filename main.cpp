@@ -14,17 +14,21 @@ int main(int argc, char* argv[]) {
 	if (role == 'c') {
 		try {
 			Client client(50001, "25.75.100.22", true);
-			client.Send(sf::Packet());
+			sf::Packet packet;
+			packet << 12;
+			client.Send(packet);
 		}
 		catch (const char *e) {
 			cout << e << endl;
 		}
 	}
-<<<<<<< HEAD
 	else if (role == 's') {
 		try {
 			Client client(50001, "25.43.221.172", true);
-			client.Send(sf::Packet());
+			client.Recive();
+			int x;
+			client.getPacket() >> x;
+			cout << x << endl;
 		}
 		catch (const char *e) {
 			cout << e << endl;
@@ -33,14 +37,6 @@ int main(int argc, char* argv[]) {
 	
 	
 	
-=======
-	catch (const char *e) {
-		cout << e << endl;
-		std::cout << "Cos sie zepsuło" << std::endl;
-	}
-
-
->>>>>>> origin/master
 	while (window.isOpen()) {
 		sf::Event e;
 		while (window.pollEvent(e)) {
