@@ -9,44 +9,29 @@ using namespace std;
 int main(int argc, char* argv[]) {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
-	Pong pong(window);
-	
+	Pong *pong;
+	Client *c;
 	char role;
 	cin >> role;
 	if (role == 'c') {
 		Config::isServer = false;
 		try {
-			Client client(50001,"25.43.221.172" , true);
-			
-			sf::Packet packet;
-			packet << 12;
-			client.Send(packet);
-
-			client.Recive();
-			int x;
-			client.getPacket() >> x;
-			cout << x << endl;
+			c = new Client(50001,"25.43.221.172" , true);
 		}
 		catch (const char *e) {
 			cout << e << endl;
 		}
+		pong = new Pong(window, *c);
 	}
 	else if (role == 's') {
 		Config::isServer = true;
 		try {
-			Client client(50001, "0.0.0.0", true);
-			client.Recive();
-			int x;
-			client.getPacket() >> x;
-			cout << x << endl;
-
-			sf::Packet packet;
-			packet << 21;
-			client.Send(packet);
+			c = new Client(50001, "0.0.0.0", true);
 		}
 		catch (const char *e) {
 			cout << e << endl;
 		}
+		pong = new Pong(window, *c);
 	}
 	
 	
@@ -62,9 +47,9 @@ int main(int argc, char* argv[]) {
 			}break;
 			}
 		}
-		pong.update();
+		pong->update();
 		window.clear(sf::Color(255, 255, 255));
-		window.draw(pong);
+		window.draw(*pong);
 		window.display();
 
 	}
