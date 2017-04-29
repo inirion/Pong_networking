@@ -16,9 +16,10 @@ int main(int argc, char* argv[]) {
 	}
 	catch (const char *e) {
 		cout << e << endl;
+		std::cout << "Cos sie zepsuło" << std::endl;
 	}
-	
-	
+
+
 	while (window.isOpen()) {
 		sf::Event e;
 		while (window.pollEvent(e)) {
