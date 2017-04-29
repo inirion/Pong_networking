@@ -6,16 +6,18 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "UDP TEST", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(800, 600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
 	Pong pong(window);
 
 	try {
-		Client<sf::TcpSocket> client(50001, "127.0.0.1");
+		Client client(50001, "25.75.100.22",true);
+		client.Send(sf::Packet());
 	}
 	catch (const char *e) {
 		cout << e << endl;
 	}
+	
 	
 	while (window.isOpen()) {
 		sf::Event e;

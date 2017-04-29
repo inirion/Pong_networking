@@ -4,7 +4,7 @@
 sf::Clock Config::clock;
 sf::Clock Config::FPSclock;
 float Config::dtime = 0.0f;
-
+bool Config::isServer = false;
 bool Config::inited = false;
 
 void Config::init() {

@@ -8,7 +8,7 @@ public:
 	static sf::Clock clock;
 	static sf::Clock FPSclock;
 	static float dtime;
-
+	static bool isServer;
 	static bool inited;
 	static void init();
 
