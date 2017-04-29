@@ -9,14 +9,27 @@ int main(int argc, char* argv[]) {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
 	Pong pong(window);
-
-	try {
-		Client client(50001, "25.75.100.22",true);
-		client.Send(sf::Packet());
+	char role;
+	cin >> role;
+	if (role == 'c') {
+		try {
+			Client client(50001, "25.75.100.22", true);
+			client.Send(sf::Packet());
+		}
+		catch (const char *e) {
+			cout << e << endl;
+		}
 	}
-	catch (const char *e) {
-		cout << e << endl;
+	else if (role == 's') {
+		try {
+			Client client(50001, "25.43.221.172", true);
+			client.Send(sf::Packet());
+		}
+		catch (const char *e) {
+			cout << e << endl;
+		}
 	}
+	
 	
 	
 	while (window.isOpen()) {
