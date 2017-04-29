@@ -21,9 +21,6 @@ void Pong::update()
 			client.Send(packet);
 		}
 	}
-
-	
-	
 	
 	if (Config::isServer) {
 		player1->update();
@@ -33,7 +30,6 @@ void Pong::update()
 		client.Send(packet);
 	}
 	else {
-
 		player2->update();
 	}
 
