@@ -1,5 +1,5 @@
 #include "Client.h"
-
+#include "Config.h"
 sf::Socket::Status Client::Send(sf::Packet packet)
 {
 	sf::Socket::Status status;
@@ -36,9 +36,21 @@ sf::Socket::Status Client::Recive()
 	else {
 		std::cout << " tcp " << std::endl;
 		tcp = true;
-		sf::Socket::Status status = tcpSocket.connect(ip, port);
-		if (status != sf::Socket::Done) {
-			throw "Couldn't connect socket =(";
+		if (Config::isServer) {
+			if (listener.listen(port) != sf::Socket::Done)
+			{
+				throw "Couldn't connect socket =(";
+			}
+			if (listener.accept(tcpSocket) != sf::Socket::Done)
+			{
+				throw "Couldn't connect socket =(";
+			}
+		}
+		else {
+			sf::Socket::Status status = tcpSocket.connect(ip, port);
+			if (status != sf::Socket::Done) {
+				throw "Couldn't connect socket =(";
+			}
 		}
 	}
 }

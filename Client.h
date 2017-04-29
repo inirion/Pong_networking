@@ -9,6 +9,7 @@ private:
 	bool tcp;
 	unsigned short port;
 	sf::IpAddress ip;
+	sf::TcpListener listener;
 	sf::UdpSocket udpSocket;
 	sf::TcpSocket tcpSocket;
 public:
