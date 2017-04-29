@@ -17,8 +17,7 @@ public:
 	friend sf::Packet& operator <<(sf::Packet& packet, Paddle& character) {
 		return packet << (float)character.getPosition().x << (float)character.getPosition().y;
 	}
-
-	Paddle& operator >>(sf::Packet& packet) {
+	void readFromPacket(sf::Packet& packet) {
 		packet >> this->position.x >> this->position.y;
 	}
 

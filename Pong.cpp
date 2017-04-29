@@ -11,13 +11,20 @@ void Pong::draw(sf::RenderTarget & target, sf::RenderStates states) const
 void Pong::update()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		sf::Packet packet;
-		packet << *player1;
-		client.Send(packet);
+		if (Config::isServer) {
+			sf::Packet packet;
+			packet << *player1;
+			client.Send(packet);
+		}
+		else {
+			sf::Packet packet;
+			packet << *player2;
+			client.Send(packet);
+		}
+		
 	}
 
 	player1->update();
-	player2->update();
 	ball->update();
 	Collision();
 	if (Config::isServer) {
@@ -30,8 +37,15 @@ void Pong::update()
 	switch (client.Recive()) {
 	case sf::Socket::Done: {
 		float x, y;
-		client.getPacket() >> x >> y;
-		std::cout << x << " " << y << std::endl;
+		if (Config::isServer) {
+			player2->readFromPacket(client.getPacket());
+			player2->movePaddle();
+		}
+		else {
+			player1->readFromPacket(client.getPacket());
+			player1->movePaddle();
+		}
+		
 	}
 		break;
 	};
