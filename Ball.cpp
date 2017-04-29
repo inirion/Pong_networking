@@ -10,9 +10,7 @@ void Ball::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 void Ball::update()
 {
-	std::cout << position.x << std::endl;
 	move(movingCoords, speed);
-	std::cout << position.x << std::endl;
 	ball.setPosition(position);
 }
 

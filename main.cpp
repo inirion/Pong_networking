@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SFML\Network.hpp>
 #include "Pong.h"
-#include <conio.h>
+#include "Client.h"
 
 using namespace std;
 
@@ -10,6 +10,13 @@ int main(int argc, char* argv[]) {
 	window.setVerticalSyncEnabled(true);
 	Pong pong(window);
 
+	try {
+		Client<sf::TcpSocket> client(50001, "127.0.0.1");
+	}
+	catch (const char *e) {
+		cout << e << endl;
+	}
+	
 	while (window.isOpen()) {
 		sf::Event e;
 		while (window.pollEvent(e)) {
