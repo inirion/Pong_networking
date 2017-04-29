@@ -16,7 +16,9 @@ int main(int argc, char* argv[]) {
 	if (role == 'c') {
 		Config::isServer = false;
 		try {
-			c = new Client(50001,"25.43.221.172" , true);
+			//25.75.100.22
+			//25.43.221.172
+			c = new Client(50001,"25.75.100.22" , true);
 		}
 		catch (const char *e) {
 			cout << e << endl;
