@@ -2,40 +2,16 @@
 #include "Config.h"
 sf::Socket::Status Client::Send(sf::Packet packet)
 {
-	sf::Socket::Status status;
-	if(tcp)
-		status = tcpSocket.send(packet);
-	else
-		status = udpSocket.send(packet,ip,port);
-	return status;
+	return tcpSocket.send(packet);
 }
 
 sf::Socket::Status Client::Recive()
 {
-	sf::Socket::Status status;
-	if (tcp)
-		status = tcpSocket.receive(packet);
-	else {
-		sf::IpAddress adress;
-		status = udpSocket.receive(packet, adress, port);
-	}
-		
-	return status;
+	return tcpSocket.receive(packet);
 }
 
- Client::Client(unsigned short port, sf::IpAddress ip, bool isTcp) : port(port), ip(ip)
+ Client::Client(unsigned short port, sf::IpAddress ip) : port(port), ip(ip)
 {
-	if (!isTcp) {
-		std::cout << " udp " << std::endl;
-		tcp = false;
-		sf::Socket::Status status = udpSocket.bind(port);
-		if (status != sf::Socket::Done) {
-			throw "Couldn't connect socket =(";
-		}
-	}
-	else {
-		std::cout << " tcp " << std::endl;
-		tcp = true;
 		if (Config::isServer) {
 			if (listener.listen(port) != sf::Socket::Done)
 			{
@@ -53,7 +29,6 @@ sf::Socket::Status Client::Recive()
 			}
 		}
 		tcpSocket.setBlocking(false);
-	}
 }
 
  Client::~Client()
