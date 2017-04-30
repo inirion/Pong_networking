@@ -36,13 +36,11 @@ int main(int argc, char* argv[]) {
 		catch (const char *e) {
 			cout << e << endl;
 		}
-		b->broadcast();
+		
 	}
 	else {
 		b = new Broadcaster(50001);
-		for (auto conn : b->getAllConnections()) {
-			cout << conn.first.toString() << " " << conn.second << endl;
-		}
+		
 	}
 
 	/*
@@ -83,12 +81,20 @@ int main(int argc, char* argv[]) {
 			}break;
 			}
 		}
-		if () {
-			pong->update();
-			window.clear(sf::Color(255, 255, 255));
-			window.draw(*pong);
-			window.display();
+		if (!Config::isServer) {
+			for (auto conn : b->getAllConnections()) {
+				cout << conn.first.toString() << " " << conn.second << endl;
+			}
 		}
+		else {
+			b->broadcast();
+		}
+		
+		
+		//pong->update();
+		window.clear(sf::Color(255, 255, 255));
+		//window.draw(*pong);
+		window.display();
 	}
 	return 0;
 }

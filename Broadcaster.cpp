@@ -1,8 +1,9 @@
 #include "Broadcaster.h"
+#include <iostream>
 
-Broadcaster::Broadcaster(unsigned short broadcast_port, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName)
+Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName)
 {
-	if (s.bind(broadcast_port) != sf::UdpSocket::Done) {
+	if (s.bind(broadcastPort) != sf::UdpSocket::Done) {
 		throw "Coudn't bind broadcast socket";
 	}
 	else {
@@ -10,13 +11,14 @@ Broadcaster::Broadcaster(unsigned short broadcast_port, const std::string &serve
 	}
 }
 
-serverPair& Broadcaster::onNewConnection()
+serverPair Broadcaster::onNewConnection()
 {
 	// TODO: insert return statement here
 	sf::Packet p;
 	sf::IpAddress incomingConnectionAddress;
-	switch (s.receive(p, incomingConnectionAddress, broadcastPort)) {
-	case sf::UdpSocket::Done: {
+	unsigned short port;
+	switch (s.receive(p, incomingConnectionAddress, port)) {
+	case sf::Socket::Done : {
 		serverPair newP;
 		newP.first = incomingConnectionAddress;
 		p >> newP.second;
@@ -28,21 +30,22 @@ serverPair& Broadcaster::onNewConnection()
 		break;
 	}
 	}
+	return serverPair("","");
 }
 
 std::vector<serverPair>& Broadcaster::getAllConnections()
 {
-	serverPair * fresh = &onNewConnection();
+	serverPair fresh = onNewConnection();
 	bool shouldAdd = true;
-	if (fresh) {
+	if (fresh.first != "") {
 		for (serverPair p : conns) {
-			if (p.first == fresh->first) {
+			if (p.first == fresh.first) {
 				shouldAdd = false;
 				break;
 			}
 		}
 		if (shouldAdd) {
-			conns.push_back(*fresh);
+			conns.push_back(fresh);
 		}
 	}
 	return conns;

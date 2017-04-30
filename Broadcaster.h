@@ -14,7 +14,7 @@ private:
 	sf::UdpSocket s;
 public:
 	Broadcaster(unsigned short broadcastPort, const std::string &serverName = "");
-	serverPair& onNewConnection();
+	serverPair onNewConnection();
 	std::vector<serverPair> & getAllConnections();
 	void broadcast();
 	~Broadcaster();
