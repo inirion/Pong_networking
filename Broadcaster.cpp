@@ -4,7 +4,7 @@
 void Broadcaster::update()
 {
 	// TODO: every N secs check if you've received packed from already contained connections
-	if (Config::clock.getElapsedTime().asMilliseconds() - lastFrameTime >= 2000) {
+	if (Config::clock.getElapsedTime().asMilliseconds() - lastFrameTime >= 1) {
 		if (Config::isServer) {
 			broadcast(STATES::BROADCASTING);
 		}
@@ -44,9 +44,8 @@ bool Broadcaster::checkNewConn()
 		return false;
 	}
 	if (conns.size() > 0) {
-		Timepoint now = sysClock::now();
 		for (int i = 0; i < conns.size(); i++) {
-			if ((now - std::get<TupleFields::TIMESTAMP>(conns[i])) > std::chrono::seconds(2)) {
+			if (Config::clock.getElapsedTime().asMilliseconds() - std::get<TupleFields::TIMESTAMP>(conns[i]) > 2000) {
 				conns.erase(conns.begin() + i);
 			}
 		}
@@ -90,7 +89,7 @@ serverTuple Broadcaster::onNewConnection()
 		int ENUM;
 		std::string name;
 		p >> ENUM >> name;
-		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, sysClock::now());
+		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, Config::clock.getElapsedTime().asMilliseconds());
 	}
 	case sf::UdpSocket::Error: {
 		throw "Error occured during broadcasting";
@@ -98,7 +97,7 @@ serverTuple Broadcaster::onNewConnection()
 		break;
 	}
 	}
-	return std::make_tuple(incomingConnectionAddress, "", STATES::FAILED, sysClock::now());
+	return std::make_tuple(incomingConnectionAddress, "", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds());
 }
 
 

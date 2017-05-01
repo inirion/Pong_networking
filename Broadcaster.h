@@ -19,10 +19,7 @@ enum class STATES {
 };
 
 
-using sysClock = std::chrono::system_clock;
-using Timepoint = sysClock::time_point;
-
-using serverTuple = std::tuple<sf::IpAddress, std::string, STATES, Timepoint>;
+using serverTuple = std::tuple<sf::IpAddress, std::string, STATES, float>;
 enum TupleFields { IPADRESS, NAME, STATE, TIMESTAMP};
 
 class Broadcaster
