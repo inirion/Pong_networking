@@ -3,6 +3,7 @@
 
 void Broadcaster::update()
 {
+	// TODO: every N secs check if you've received packed from already contained connections
 	if (Config::isServer) {
 		broadcast(STATES::BROADCASTING);
 	}
@@ -27,38 +28,45 @@ Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &server
 
 bool Broadcaster::checkNewConn()
 {
-	std::vector<serverPair> copy(conns);
-	serverPair fresh = onNewConnection();
+	serverTuple fresh = onNewConnection();
 	bool shouldAdd = true;
-	if (fresh.first != "") {
-		for (serverPair p : copy) {
-			if (p.first == fresh.first) {
+	if (std::get<TupleFields::STATE>(fresh) == STATES::FAILED) {
+		return false;
+	}
+	if (conns.size() == 0 && std::get<TupleFields::STATE>(fresh) == STATES::EXIT) {
+		return false;
+	}
+	if (conns.size() > 0) {
+		for (int i = 0; i < conns.size(); i++) {
+			if (std::get<TupleFields::IPADRESS>(conns[i]) == std::get<TupleFields::IPADRESS>(fresh)) {
 				shouldAdd = false;
+				if (std::get<TupleFields::STATE>(fresh) == STATES::EXIT || (int)std::get<TupleFields::STATE>(fresh) > 2) {
+					conns.erase(conns.begin() + i);
+
+					return true;
+				}
 				break;
 			}
 		}
-		if (shouldAdd) {
-			copy.push_back(fresh);
-		}
 	}
-	if (conns != copy) {
-		conns = copy;
+	
+	if (shouldAdd) {
+		conns.push_back(fresh);
 		return true;
 	}
-	else {
-		return false;
-	}
+	return false;
 }
+
 
 void Broadcaster::printConns()
 {
-	for (auto conn : conns) {
-		std::cout << conn.first << " " << conn.second << std::endl;
-	}
 	std::system(CLEAR);
+	for (auto conn : conns) {
+		std::cout << std::get<TupleFields::IPADRESS>(conn) << " " << std::get<TupleFields::NAME>(conn) << std::endl;
+	}
 }
 
-serverPair Broadcaster::onNewConnection()
+serverTuple Broadcaster::onNewConnection()
 {
 	// TODO: insert return statement here
 	sf::Packet p;
@@ -66,10 +74,10 @@ serverPair Broadcaster::onNewConnection()
 	unsigned short port;
 	switch (s.receive(p, incomingConnectionAddress, port)) {
 	case sf::Socket::Done : {
-		serverPair newP;
-		newP.first = incomingConnectionAddress;
-		p >> newP.second;
-		return newP;
+		int ENUM;
+		std::string name;
+		p >> ENUM >> name;
+		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM);
 	}
 	case sf::UdpSocket::Error: {
 		throw "Error occured during broadcasting";
@@ -77,14 +85,15 @@ serverPair Broadcaster::onNewConnection()
 		break;
 	}
 	}
-	return serverPair("","");
+	return std::make_tuple(incomingConnectionAddress, "", STATES::FAILED);
 }
 
 
-void Broadcaster::broadcast(STATES e)
+
+void Broadcaster::broadcast(STATES ENUM)
 { 
 	sf::Packet p;
-	p << (char)e << serverName;
+	p << (int)ENUM << serverName;
 	switch (s.send(p, "25.255.255.255", broadcastPort)) {
 		case sf::UdpSocket::Done: {
 			break;

@@ -3,6 +3,7 @@
 #include "Config.h"
 #include <vector>
 #include <string>
+#include <tuple>
 
 #ifdef _WIN32
 #define CLEAR "cls"
@@ -10,12 +11,15 @@
 #define CLEAR "clear"
 #endif
 
-using serverPair = std::pair<sf::IpAddress, std::string>;
-
 enum class STATES {
 	BROADCASTING = 0,
-	EXIT = 1
+	EXIT = 1,
+	FAILED = 2
 };
+
+
+using serverTuple = std::tuple<sf::IpAddress, std::string, STATES>;
+enum TupleFields { IPADRESS, NAME, STATE };
 
 class Broadcaster
 {
@@ -23,7 +27,7 @@ private:
 
 	unsigned short broadcastPort;
 	const std::string serverName;
-	std::vector<serverPair> conns;
+	std::vector<serverTuple> conns;
 	sf::UdpSocket s;	
 	
 	sf::Text servers;
@@ -32,7 +36,7 @@ private:
 	void printConns();
 
 
-	serverPair onNewConnection();
+	serverTuple onNewConnection();
 	void broadcast(STATES);
 public:
 	void update();

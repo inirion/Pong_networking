@@ -78,6 +78,7 @@ int main(int argc, char* argv[]) {
 			switch (e.type) {
 			default: break;
 			case e.Closed: {
+
 				window.close();
 				e.type = e.Count;
 			}break;
@@ -89,5 +90,6 @@ int main(int argc, char* argv[]) {
 		//window.draw(*pong);
 		window.display();
 	}
+	delete b;
 	return 0;
 }
