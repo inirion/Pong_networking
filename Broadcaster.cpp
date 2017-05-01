@@ -1,6 +1,20 @@
 #include "Broadcaster.h"
 #include <iostream>
 
+void Broadcaster::update()
+{
+	if (Config::isServer) {
+		broadcast(STATES::BROADCASTING);
+	}
+	else {
+		if (checkNewConn()) {
+			printConns();
+		}
+	}
+}
+
+
+
 Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName)
 {
 	if (s.bind(broadcastPort) != sf::UdpSocket::Done) {
@@ -9,6 +23,39 @@ Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &server
 	else {
 		s.setBlocking(false);
 	}
+}
+
+bool Broadcaster::checkNewConn()
+{
+	std::vector<serverPair> copy(conns);
+	serverPair fresh = onNewConnection();
+	bool shouldAdd = true;
+	if (fresh.first != "") {
+		for (serverPair p : copy) {
+			if (p.first == fresh.first) {
+				shouldAdd = false;
+				break;
+			}
+		}
+		if (shouldAdd) {
+			copy.push_back(fresh);
+		}
+	}
+	if (conns != copy) {
+		conns = copy;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void Broadcaster::printConns()
+{
+	for (auto conn : conns) {
+		std::cout << conn.first << " " << conn.second << std::endl;
+	}
+	std::system(CLEAR);
 }
 
 serverPair Broadcaster::onNewConnection()
@@ -33,29 +80,12 @@ serverPair Broadcaster::onNewConnection()
 	return serverPair("","");
 }
 
-std::vector<serverPair>& Broadcaster::getAllConnections()
-{
-	serverPair fresh = onNewConnection();
-	bool shouldAdd = true;
-	if (fresh.first != "") {
-		for (serverPair p : conns) {
-			if (p.first == fresh.first) {
-				shouldAdd = false;
-				break;
-			}
-		}
-		if (shouldAdd) {
-			conns.push_back(fresh);
-		}
-	}
-	return conns;
-}
 
-void Broadcaster::broadcast()
+void Broadcaster::broadcast(STATES e)
 { 
 	sf::Packet p;
-	p << serverName;
-	switch (s.send(p, sf::IpAddress::Broadcast, broadcastPort)) {
+	p << (char)e << serverName;
+	switch (s.send(p, "25.255.255.255", broadcastPort)) {
 		case sf::UdpSocket::Done: {
 			break;
 		}
@@ -69,5 +99,5 @@ void Broadcaster::broadcast()
 
 Broadcaster::~Broadcaster()
 {
-
+	broadcast(STATES::EXIT);
 }

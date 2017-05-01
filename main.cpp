@@ -26,6 +26,8 @@ int main(int argc, char* argv[]) {
 
 	if (role == 's') {
 
+		Config::isServer = true;
+
 		std::string serverName;
 		cout << "Enter server name: ";
 		cin >> serverName;
@@ -40,7 +42,7 @@ int main(int argc, char* argv[]) {
 	}
 	else {
 		b = new Broadcaster(50001);
-		
+		Config::isServer = false;
 	}
 
 	/*
@@ -81,16 +83,7 @@ int main(int argc, char* argv[]) {
 			}break;
 			}
 		}
-		if (!Config::isServer) {
-			for (auto conn : b->getAllConnections()) {
-				cout << conn.first.toString() << " " << conn.second << endl;
-			}
-		}
-		else {
-			b->broadcast();
-		}
-		
-		
+		b->update();
 		//pong->update();
 		window.clear(sf::Color(255, 255, 255));
 		//window.draw(*pong);
