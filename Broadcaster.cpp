@@ -1,6 +1,16 @@
 #include "Broadcaster.h"
 #include <iostream>
 
+double mticks()
+{
+	typedef std::chrono::high_resolution_clock clock;
+	typedef std::chrono::duration<float, std::milli> duration;
+
+	static clock::time_point start = clock::now();
+	duration elapsed = clock::now() - start;
+	return elapsed.count();
+}
+
 void Broadcaster::update()
 {
 	// TODO: every N secs check if you've received packed from already contained connections
@@ -22,6 +32,11 @@ void Broadcaster::close()
 	broadcast(STATES::EXIT);
 }
 
+std::vector<serverTuple> Broadcaster::getConns()
+{
+	return conns;
+}
+
 Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName)
 {
 	if (s.bind(broadcastPort) != sf::UdpSocket::Done) {
@@ -35,38 +50,42 @@ Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &server
 
 bool Broadcaster::checkNewConn()
 {
+	bool reset = false;
 	serverTuple fresh = onNewConnection();
 	bool shouldAdd = true;
 	if (std::get<TupleFields::STATE>(fresh) == STATES::FAILED) {
-		return false;
+		reset = false;
+		shouldAdd = false;
 	}
 	if (conns.size() == 0 && std::get<TupleFields::STATE>(fresh) == STATES::EXIT) {
-		return false;
+		reset =  false;
+		shouldAdd = false;
 	}
-	if (conns.size() > 0) {
-		for (int i = 0; i < conns.size(); i++) {
-			if (Config::clock.getElapsedTime().asMilliseconds() - std::get<TupleFields::TIMESTAMP>(conns[i]) > 2000) {
+	for (int i = 0; i < conns.size(); i++) {
+		if (std::get<TupleFields::IPADRESS>(conns[i]) == std::get<TupleFields::IPADRESS>(fresh)) {
+				
+			std::get<TupleFields::TIMESTAMP>(conns[i]) = mticks();
+			shouldAdd = false;
+			if (std::get<TupleFields::STATE>(fresh) == STATES::EXIT || (int)std::get<TupleFields::STATE>(fresh) > 2) {
 				conns.erase(conns.begin() + i);
-			}
-		}
-		for (int i = 0; i < conns.size(); i++) {
-			if (std::get<TupleFields::IPADRESS>(conns[i]) == std::get<TupleFields::IPADRESS>(fresh)) {
-				shouldAdd = false;
-				if (std::get<TupleFields::STATE>(fresh) == STATES::EXIT || (int)std::get<TupleFields::STATE>(fresh) > 2) {
-					conns.erase(conns.begin() + i);
-
-					return true;
-				}
-				break;
+				reset = true;
 			}
 		}
 	}
 	
+	
+	for (int i = 0; i < conns.size(); i++) {
+		if (mticks() - std::get<TupleFields::TIMESTAMP>(conns[i]) > 5000) {
+			conns.erase(conns.begin() + i);
+			reset = true;
+		}
+	}
+
 	if (shouldAdd) {
 		conns.push_back(fresh);
-		return true;
+		reset = true;
 	}
-	return false;
+	return reset;
 }
 
 
@@ -86,10 +105,15 @@ serverTuple Broadcaster::onNewConnection()
 	unsigned short port;
 	switch (s.receive(p, incomingConnectionAddress, port)) {
 	case sf::Socket::Done : {
+		
+		if (incomingConnectionAddress == sf::IpAddress("0.0.0.0")) {
+			return std::make_tuple(incomingConnectionAddress, "", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds());
+		}
+		
 		int ENUM;
 		std::string name;
 		p >> ENUM >> name;
-		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, Config::clock.getElapsedTime().asMilliseconds());
+		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, mticks());
 	}
 	case sf::UdpSocket::Error: {
 		throw "Error occured during broadcasting";

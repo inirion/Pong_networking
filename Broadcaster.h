@@ -31,7 +31,7 @@ private:
 	const std::string serverName;
 	std::vector<serverTuple> conns;
 	sf::UdpSocket s;	
-	
+	sf::Text list;
 	bool checkNewConn();
 	void printConns();
 
@@ -40,6 +40,7 @@ private:
 public:
 	void update();
 	void close();
+	std::vector<serverTuple> getConns();
 	Broadcaster(unsigned short broadcastPort, const std::string &serverName = "");
 	~Broadcaster();
 };
