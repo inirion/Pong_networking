@@ -4,17 +4,23 @@
 void Broadcaster::update()
 {
 	// TODO: every N secs check if you've received packed from already contained connections
-	if (Config::isServer) {
-		broadcast(STATES::BROADCASTING);
-	}
-	else {
-		if (checkNewConn()) {
-			printConns();
+	if (Config::clock.getElapsedTime().asMilliseconds() - lastFrameTime >= 2000) {
+		if (Config::isServer) {
+			broadcast(STATES::BROADCASTING);
 		}
+		else {
+			if (checkNewConn()) {
+				printConns();
+			}
+		}
+		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
 	}
 }
 
-
+void Broadcaster::close()
+{
+	broadcast(STATES::EXIT);
+}
 
 Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName)
 {
@@ -22,6 +28,7 @@ Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &server
 		throw "Coudn't bind broadcast socket";
 	}
 	else {
+		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
 		s.setBlocking(false);
 	}
 }
@@ -37,6 +44,12 @@ bool Broadcaster::checkNewConn()
 		return false;
 	}
 	if (conns.size() > 0) {
+		Timepoint now = sysClock::now();
+		for (int i = 0; i < conns.size(); i++) {
+			if ((now - std::get<TupleFields::TIMESTAMP>(conns[i])) > std::chrono::seconds(2)) {
+				conns.erase(conns.begin() + i);
+			}
+		}
 		for (int i = 0; i < conns.size(); i++) {
 			if (std::get<TupleFields::IPADRESS>(conns[i]) == std::get<TupleFields::IPADRESS>(fresh)) {
 				shouldAdd = false;
@@ -77,7 +90,7 @@ serverTuple Broadcaster::onNewConnection()
 		int ENUM;
 		std::string name;
 		p >> ENUM >> name;
-		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM);
+		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, sysClock::now());
 	}
 	case sf::UdpSocket::Error: {
 		throw "Error occured during broadcasting";
@@ -85,9 +98,8 @@ serverTuple Broadcaster::onNewConnection()
 		break;
 	}
 	}
-	return std::make_tuple(incomingConnectionAddress, "", STATES::FAILED);
+	return std::make_tuple(incomingConnectionAddress, "", STATES::FAILED, sysClock::now());
 }
-
 
 
 void Broadcaster::broadcast(STATES ENUM)

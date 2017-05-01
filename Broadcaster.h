@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include <chrono>
 
 #ifdef _WIN32
 #define CLEAR "cls"
@@ -18,28 +19,30 @@ enum class STATES {
 };
 
 
-using serverTuple = std::tuple<sf::IpAddress, std::string, STATES>;
-enum TupleFields { IPADRESS, NAME, STATE };
+using sysClock = std::chrono::system_clock;
+using Timepoint = sysClock::time_point;
+
+using serverTuple = std::tuple<sf::IpAddress, std::string, STATES, Timepoint>;
+enum TupleFields { IPADRESS, NAME, STATE, TIMESTAMP};
 
 class Broadcaster
 {
 private:
 
 	unsigned short broadcastPort;
+	float lastFrameTime;
 	const std::string serverName;
 	std::vector<serverTuple> conns;
 	sf::UdpSocket s;	
 	
-	sf::Text servers;
-
 	bool checkNewConn();
 	void printConns();
-
 
 	serverTuple onNewConnection();
 	void broadcast(STATES);
 public:
 	void update();
+	void close();
 	Broadcaster(unsigned short broadcastPort, const std::string &serverName = "");
 	~Broadcaster();
 };
