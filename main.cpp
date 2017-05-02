@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
 		}
 		window.clear(sf::Color(255, 255, 255));
 		b->update();
-		l.update(b->getConns());
+		l.update(b->getConns(),e);
 		window.draw(l);
 		if (Config::isPongPlaying) {
 			pong->update();
