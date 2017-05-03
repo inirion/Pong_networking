@@ -1,12 +1,7 @@
 #include "Lobby.h"
 #include <iostream>
 
-#define ButtonPosition(btn) (std::get<ConnectionFields::BUTTON>(btn).getPosition())
-#define ButtonSize(btn) (std::get<ConnectionFields::BUTTON>(btn).getSize())
-#define ButtonText(btn) (std::get<ConnectionFields::TEXT>(btn).getString().toAnsiString())
-#define ButtonVisability(btn) (std::get<ConnectionFields::VISIBILITY>(btn))
-#define Button(btn) (std::get<ConnectionFields::BUTTON>(btn))
-#define Text(btn) (std::get<ConnectionFields::TEXT>(btn))
+
 
 void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
@@ -33,8 +28,10 @@ bool Lobby::InButtonBounds(ConnectionButtons btn) {
 	return false;
 }
 
-void Lobby::update(std::vector<serverTuple>,sf::Event e)
+void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 {
+	FillButtonList(connections);
+
 	if (e.type == sf::Event::MouseButtonReleased) {
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
@@ -86,15 +83,19 @@ Lobby::Lobby(sf::RenderWindow& rw):rw(rw)
 	buttonWidth = 200;
 	buttonHeight = rw.getSize().x / 5 - 40;
 
-	for (int i = 0, j = 0; i < 6; i++, j++) {
-		btns.push_back(AddButton(-1,-1,std::to_string(i)));
+	for (int i = 0, j = 0; i < 1; i++, j++) {
+		btns.push_back(AddButton(std::to_string(i) ,"0.0.0.0", -1,-1));
 	}
-	paginationBttns.push_back(AddButton(buttonWidth, rw.getSize().y - buttonHeight,"Prev"));
-	paginationBttns.push_back(AddButton(rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight,"Next"));
+	paginationBttns.push_back(AddButton("Prev","0.0.0.0", buttonWidth, rw.getSize().y - buttonHeight));
+	paginationBttns.push_back(AddButton("Next","0.0.0.0", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
 	EnableButton();
 }
 
-ConnectionButtons Lobby::AddButton(float x, float y, std::string name) {
+void Lobby::FillButtonList(std::vector<serverTuple> connections) {
+	
+}
+
+ConnectionButtons Lobby::AddButton(std::string name, sf::IpAddress adress, float x, float y) {
 	sf::RectangleShape button;
 	sf::Text text;
 
@@ -116,7 +117,7 @@ ConnectionButtons Lobby::AddButton(float x, float y, std::string name) {
 	
 	yOffest++;
 
-	return std::make_tuple(button, text, false);
+	return std::make_tuple(button, text, false, adress);
 }
 
 Lobby::~Lobby()

@@ -3,14 +3,21 @@
 #include <SFML\Graphics.hpp>
 #include "Broadcaster.h"
 
-using ConnectionButtons = std::tuple<sf::RectangleShape, sf::Text,bool>;
-enum ConnectionFields { BUTTON, TEXT, VISIBILITY };
+#define ButtonPosition(btn) (std::get<ConnectionFields::BUTTON>(btn).getPosition())
+#define ButtonSize(btn) (std::get<ConnectionFields::BUTTON>(btn).getSize())
+#define ButtonText(btn) (std::get<ConnectionFields::TEXT>(btn).getString().toAnsiString())
+#define ButtonIP(btn) (std::get<ConnectionFields::IP>(btn))
+#define ButtonVisability(btn) (std::get<ConnectionFields::VISIBILITY>(btn))
+#define Button(btn) (std::get<ConnectionFields::BUTTON>(btn))
+#define Text(btn) (std::get<ConnectionFields::TEXT>(btn))
+
+using ConnectionButtons = std::tuple<sf::RectangleShape, sf::Text,bool,sf::IpAddress>;
+enum ConnectionFields { BUTTON, TEXT, VISIBILITY, IP };
 
 class Lobby:public sf::Drawable
 {
 private:
 	unsigned short pageNumber;
-	bool isPressed;
 	float yOffest;
 	float buttonHeight;
 	float buttonWidth;
@@ -19,7 +26,8 @@ private:
 
 	void EnableButton();
 	bool InButtonBounds(ConnectionButtons btn);
-	ConnectionButtons AddButton(float x = -1, float y= -1,std::string name = "a");
+	ConnectionButtons AddButton(std::string name = "a", sf::IpAddress adress = "0.0.0.0", float x = -1, float y= -1);
+	void FillButtonList(std::vector<serverTuple>);
 
 	std::vector<ConnectionButtons> paginationBttns;
 	std::vector<ConnectionButtons> btns;

@@ -18,6 +18,8 @@ enum class STATES {
 	FAILED = 2
 };
 
+#define ConnectionText(btn) (std::get<TupleFields::NAME>(btn))
+#define ConnectionIP(btn) (std::get<TupleFields::IPADRESS>(btn))
 
 using serverTuple = std::tuple<sf::IpAddress, std::string, STATES, float>;
 enum TupleFields { IPADRESS, NAME, STATE, TIMESTAMP};
