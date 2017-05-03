@@ -5,22 +5,23 @@
 #define ButtonSize(btn) (std::get<ConnectionFields::BUTTON>(btn).getSize())
 #define ButtonText(btn) (std::get<ConnectionFields::TEXT>(btn).getString().toAnsiString())
 #define ButtonVisability(btn) (std::get<ConnectionFields::VISIBILITY>(btn))
+#define Button(btn) (std::get<ConnectionFields::BUTTON>(btn))
+#define Text(btn) (std::get<ConnectionFields::TEXT>(btn))
 
 void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	for (auto btn : btns) {
-		if (std::get<ConnectionFields::VISIBILITY>(btn)) {
-			target.draw(std::get<ConnectionFields::BUTTON>(btn));
-			target.draw(std::get<ConnectionFields::TEXT>(btn));
+		if (ButtonVisability(btn)) {
+			target.draw(Button(btn));
+			target.draw(Text(btn));
 		}
 	}
 	for (auto btn : paginationBttns) {
-		if(std::get<ConnectionFields::VISIBILITY>(btn)) {
-			target.draw(std::get<ConnectionFields::BUTTON>(btn));
-			target.draw(std::get<ConnectionFields::TEXT>(btn));
+		if(ButtonVisability(btn)) {
+			target.draw(Button(btn));
+			target.draw(Text(btn));
 		}
 	}
-	
 }
 
 bool Lobby::InButtonBounds(ConnectionButtons btn) {
@@ -99,14 +100,11 @@ ConnectionButtons Lobby::AddButton(float x, float y, std::string name) {
 
 	(int)yOffest % 5 == 0 ? yOffest = 0 : yOffest= yOffest;
 
-	float buttonHeight = rw.getSize().x / 5 - 40;
-	float buttonWigth = 200;
-
 	x == -1 ? x = 0: x = x;
 	y == -1 ? y = yOffest*buttonHeight : y = y;
 
 	button.setOutlineThickness(2.f);
-	button.setSize(sf::Vector2f(buttonWigth, buttonHeight));
+	button.setSize(sf::Vector2f(buttonWidth, buttonHeight));
 	button.setFillColor(sf::Color::Red);
 	button.setPosition(sf::Vector2f(x, y));
 
