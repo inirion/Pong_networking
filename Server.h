@@ -15,7 +15,6 @@ public:
 
 	bool Send(sf::Packet)override;
 	bool Recive() override;
-	inline sf::Packet getPacket() { return packet; };
 	Server();
 	~Server();
 };
