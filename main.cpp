@@ -35,7 +35,6 @@ int main(int argc, char* argv[]) {
 
 		try {
 			c = new Client();
-			
 			b = new Broadcaster(50001, serverName);
 		}
 		catch (const char *e) {
@@ -44,6 +43,7 @@ int main(int argc, char* argv[]) {
 		
 	}
 	else {
+		c = new Client();
 		b = new Broadcaster(50001);
 		Config::isServer = false;
 	}
@@ -91,34 +91,34 @@ int main(int argc, char* argv[]) {
 		if (!Config::TCPstart) {
 			b->update();
 			if (Config::isServer) {
-				try {
-					Config::TCPstart = c->setConnection("0.0.0.0");
-				}
-				catch (const char *e) {
-					cout << e << endl;
-				}
+				Config::TCPstart = c->setConnection();
 			}
 			else {
 				Config::TCPstart = c->setConnection(l.getSelectedIpAdress());
 			}
+			l.update(b->getConns(), e);
+			window.draw(l);
 		}
 		else {
 			if (Config::isServer) {
-				std::string name;
+				int name;
 				cin >> name;
 				sf::Packet p;
 				p << name;
 				c->Send(p);
 			}
 			else {
-				c->Recive();
-				std::cout << c->getPacket();
-				
+				switch (c->Recive()) {
+				case sf::TcpSocket::Done: {
+					std::string a;
+					c->getPacket() >> a;
+					std::cout << a << std::endl;
+					break;
+				}
+				}	
 			}
-			
 		}
-		l.update(b->getConns(),e);
-		window.draw(l);
+		
 		if (Config::isPongPlaying) {
 			pong->update();
 			window.draw(*pong);

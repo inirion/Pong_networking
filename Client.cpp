@@ -16,10 +16,9 @@ bool Client::setConnection(sf::IpAddress ip)
 		sf::Socket::Status status = tcpSocket.connect(ip, port);
 		if (status != sf::Socket::Done) {
 			return false;
-		}
+		}else
 		return true;
 	}
-	
 }
 sf::Socket::Status Client::Send(sf::Packet packet)
 {

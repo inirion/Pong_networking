@@ -37,7 +37,7 @@ std::vector<serverTuple> Broadcaster::getConns()
 	return conns;
 }
 
-Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName)
+Broadcaster::Broadcaster(unsigned short broadcastPort, const std::string &serverName) : broadcastPort(broadcastPort), serverName(serverName), Networking<sf::UdpSocket>(50001)
 {
 	if (s.bind(broadcastPort) != sf::UdpSocket::Done) {
 		throw "Coudn't bind broadcast socket";
@@ -62,10 +62,8 @@ bool Broadcaster::checkNewConn()
 		reset =  false;
 		shouldAdd = false;
 	}
-	for (int i = 0; i < conns.size(); i++) {
-		
+	for (size_t i = 0; i < conns.size(); i++) {
 		if (std::get<TupleFields::IPADRESS>(conns[i]) == std::get<TupleFields::IPADRESS>(fresh)) {
-			
 			std::get<TupleFields::TIMESTAMP>(conns[i]) = mticks();
 			shouldAdd = false;
 			if (std::get<TupleFields::STATE>(fresh) == STATES::EXIT || (int)std::get<TupleFields::STATE>(fresh) > 2) {
@@ -76,7 +74,7 @@ bool Broadcaster::checkNewConn()
 	}
 	
 	
-	for (int i = 0; i < conns.size(); i++) {
+	for (size_t i = 0; i < conns.size(); i++) {
 		if (mticks() - std::get<TupleFields::TIMESTAMP>(conns[i]) > 5000) {
 			conns.erase(conns.begin() + i);
 			reset = true;

@@ -11,7 +11,7 @@ private:
 	sf::TcpListener listener;
 	sf::TcpSocket tcpSocket;
 public:
-	bool setConnection(sf::IpAddress);
+	bool setConnection(sf::IpAddress = "0.0.0.0");
 	sf::Socket::Status Send(sf::Packet packet);
 	sf::Socket::Status Recive();
 	inline sf::Packet getPacket() { return packet; };
