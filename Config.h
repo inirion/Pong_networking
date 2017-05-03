@@ -4,7 +4,7 @@
 class Config {
 
 public:
-
+	static bool TCPstart;
 	static sf::Clock clock;
 	static sf::Clock FPSclock;
 	static float dtime;

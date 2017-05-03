@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 
 		try {
 			c = new Client();
-			c->setConnection("0.0.0.0");
+			
 			b = new Broadcaster(50001, serverName);
 		}
 		catch (const char *e) {
@@ -81,14 +81,24 @@ int main(int argc, char* argv[]) {
 			switch (e.type) {
 			default: break;
 			case e.Closed: {
-
 				window.close();
 				e.type = e.Count;
 			}break;
 			}
 		}
 		window.clear(sf::Color(255, 255, 255));
-		b->update();
+		if (Config::isServer) {
+			c->setConnection("0.0.0.0");
+		}
+		else {
+			if (l.getSelectedIpAdress() != "0.0.0.0") {
+				Config::TCPstart = true;
+				c->setConnection(l.getSelectedIpAdress());
+			}
+		}
+		if (!Config::TCPstart) {
+			b->update();
+		}
 		l.update(b->getConns(),e);
 		window.draw(l);
 		if (Config::isPongPlaying) {

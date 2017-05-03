@@ -34,6 +34,7 @@ bool Lobby::InButtonBounds(ConnectionButton btn) {
 
 void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 {
+	
 	if (e.type == sf::Event::MouseButtonReleased) {
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
@@ -79,6 +80,8 @@ void Lobby::EnableButton() {
 		ButtonVisability(btns[i]) = true;
 	}
 
+	ButtonVisability(refreshBtn) = true;
+
 	pageNumber == 1 ? ButtonVisability(paginationBttns[0]) = false : ButtonVisability(paginationBttns[0]) = true;
 	pageNumber*5 >= (btns.size()) ? ButtonVisability(paginationBttns[1]) = false : ButtonVisability(paginationBttns[1]) = true;
 }
@@ -90,9 +93,10 @@ Lobby::Lobby(sf::RenderWindow& rw):rw(rw)
 	yOffest = 0;
 	buttonWidth = 200;
 	buttonHeight = rw.getDefaultView().getSize().y / 5;
+	SelectedIP = sf::IpAddress("0.0.0.0");
 
 	for (int i = 0, j = 0; i < 12; i++, j++) {
-		btns.push_back(AddButton(std::to_string(i) ,"0.0.0.1", -1,-1));
+		//btns.push_back(AddButton(std::to_string(i) ,"0.0.0.1", -1,-1));
 	}
 	paginationBttns.push_back(AddButton("Prev","", buttonWidth, rw.getSize().y - buttonHeight));
 	paginationBttns.push_back(AddButton("Next","", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
@@ -119,6 +123,7 @@ void Lobby::FillButtonList(std::vector<serverTuple> connections) {
 	}//for erase when page number is 2 and only record is deleted switch back to page 1
 	*/
 	btns.clear();
+	yOffest = 0;
 	for (auto connection : connections) {
 		btns.push_back(AddButton(ConnectionText(connection), ConnectionIP(connection)));
 		std::cout << ConnectionText(connection) << " " << btns.size() << std::endl;
