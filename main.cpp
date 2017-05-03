@@ -87,17 +87,35 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		window.clear(sf::Color(255, 255, 255));
-		if (Config::isServer) {
-			c->setConnection("0.0.0.0");
-		}
-		else {
-			if (l.getSelectedIpAdress() != "0.0.0.0") {
-				Config::TCPstart = true;
-				c->setConnection(l.getSelectedIpAdress());
-			}
-		}
+
 		if (!Config::TCPstart) {
 			b->update();
+			if (Config::isServer) {
+				try {
+					Config::TCPstart = c->setConnection("0.0.0.0");
+				}
+				catch (const char *e) {
+					cout << e << endl;
+				}
+			}
+			else {
+				Config::TCPstart = c->setConnection(l.getSelectedIpAdress());
+			}
+		}
+		else {
+			if (Config::isServer) {
+				std::string name;
+				cin >> name;
+				sf::Packet p;
+				p << name;
+				c->Send(p);
+			}
+			else {
+				c->Recive();
+				std::cout << c->getPacket();
+				
+			}
+			
 		}
 		l.update(b->getConns(),e);
 		window.draw(l);

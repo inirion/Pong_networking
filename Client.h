@@ -10,9 +10,8 @@ private:
 	sf::IpAddress ip;
 	sf::TcpListener listener;
 	sf::TcpSocket tcpSocket;
-
 public:
-	void setConnection(sf::IpAddress);
+	bool setConnection(sf::IpAddress);
 	sf::Socket::Status Send(sf::Packet packet);
 	sf::Socket::Status Recive();
 	inline sf::Packet getPacket() { return packet; };
