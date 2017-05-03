@@ -16,7 +16,7 @@ using namespace std;
 //implementacja do projektu.
 int main(int argc, char* argv[]) {
 	sf::Vector2f(2, 2);
-	sf::RenderWindow window(sf::VideoMode(800, 600), "TCP TEST", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
 	Pong *pong;
 	Client *c;

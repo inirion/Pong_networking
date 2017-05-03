@@ -17,9 +17,13 @@ void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 			target.draw(Text(btn));
 		}
 	}
+
+	target.draw(Button(refreshBtn));
+	target.draw(Text(refreshBtn));
 }
 
-bool Lobby::InButtonBounds(ConnectionButtons btn) {
+
+bool Lobby::InButtonBounds(ConnectionButton btn) {
 	if (sf::Mouse::getPosition(rw).x > ButtonPosition(btn).x &&
 		sf::Mouse::getPosition(rw).x < ButtonPosition(btn).x + ButtonSize(btn).x &&
 		sf::Mouse::getPosition(rw).y > ButtonPosition(btn).y &&
@@ -30,8 +34,6 @@ bool Lobby::InButtonBounds(ConnectionButtons btn) {
 
 void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 {
-	FillButtonList(connections);
-
 	if (e.type == sf::Event::MouseButtonReleased) {
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
@@ -55,6 +57,11 @@ void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 						EnableButton();
 					}
 				}
+			}
+		}
+		if (ButtonVisability(refreshBtn)) {
+			if (InButtonBounds(refreshBtn)) {
+				FillButtonList(connections);
 			}
 		}
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x + 1, sf::Mouse::getPosition().y));
@@ -82,24 +89,26 @@ Lobby::Lobby(sf::RenderWindow& rw):rw(rw)
 	pageNumber = 1;
 	yOffest = 0;
 	buttonWidth = 200;
-	buttonHeight = rw.getSize().x / 5 - 40;
+	buttonHeight = rw.getDefaultView().getSize().y / 5;
 
 	for (int i = 0, j = 0; i < 12; i++, j++) {
-	//	btns.push_back(AddButton(std::to_string(i) ,"0.0.0.1", -1,-1));
+		btns.push_back(AddButton(std::to_string(i) ,"0.0.0.1", -1,-1));
 	}
-	paginationBttns.push_back(AddButton("Prev","0.0.0.0", buttonWidth, rw.getSize().y - buttonHeight));
-	paginationBttns.push_back(AddButton("Next","0.0.0.0", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
+	paginationBttns.push_back(AddButton("Prev","", buttonWidth, rw.getSize().y - buttonHeight));
+	paginationBttns.push_back(AddButton("Next","", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
+	refreshBtn = AddButton("Refresh", "", rw.getSize().x - buttonWidth, 0);
 	EnableButton();
 }
 
 void Lobby::FillButtonList(std::vector<serverTuple> connections) {
-	for (auto connection : connections) {
+	/*for (auto connection : connections) {
 		if (btns.size() < connections.size()) {
 			auto it = std::find_if(btns.begin(), btns.end(), [connection](auto item) {
 				return ButtonIP(item) == ConnectionIP(connection);
 			});
 
 			if (it != btns.end()) {
+				//found same ip
 			}
 			else {
 				btns.push_back(AddButton(ConnectionText(connection), ConnectionIP(connection)));
@@ -107,14 +116,21 @@ void Lobby::FillButtonList(std::vector<serverTuple> connections) {
 				EnableButton();
 			}
 		}
+	}//for erase when page number is 2 and only record is deleted switch back to page 1
+	*/
+	btns.clear();
+	for (auto connection : connections) {
+		btns.push_back(AddButton(ConnectionText(connection), ConnectionIP(connection)));
+		std::cout << ConnectionText(connection) << " " << btns.size() << std::endl;
 	}
+	EnableButton();
 }
 
-ConnectionButtons Lobby::AddButton(std::string name, sf::IpAddress adress, float x, float y) {
+ConnectionButton Lobby::AddButton(std::string name, sf::IpAddress adress, float x, float y) {
 	sf::RectangleShape button;
 	sf::Text text;
 
-	(int)yOffest % 5 == 0 ? yOffest = 0 : yOffest= yOffest;
+	yOffest % 5 == 0 ? yOffest = 0 : yOffest= yOffest;
 	x == -1 ? x = 0: x = x;
 	y == -1 ? y = yOffest*buttonHeight : y = y;
 	x == 0 ? yOffest++ : yOffest = yOffest ;
@@ -130,8 +146,6 @@ ConnectionButtons Lobby::AddButton(std::string name, sf::IpAddress adress, float
 	text.setString(name);
 	text.setCharacterSize(20);
 	text.setColor(sf::Color::Blue);
-	
-	
 
 	return std::make_tuple(button, text, false, adress);
 }

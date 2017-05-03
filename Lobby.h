@@ -11,7 +11,7 @@
 #define Button(btn) (std::get<ConnectionFields::BUTTON>(btn))
 #define Text(btn) (std::get<ConnectionFields::TEXT>(btn))
 
-using ConnectionButtons = std::tuple<sf::RectangleShape, sf::Text,bool,sf::IpAddress>;
+using ConnectionButton = std::tuple<sf::RectangleShape, sf::Text,bool,sf::IpAddress>;
 enum ConnectionFields { BUTTON, TEXT, VISIBILITY, IP };
 
 class Lobby:public sf::Drawable
@@ -19,19 +19,20 @@ class Lobby:public sf::Drawable
 private:
 	unsigned short pageNumber;
 	sf::IpAddress SelectedIP;
-	float yOffest;
+	int yOffest;
 	float buttonHeight;
 	float buttonWidth;
 	sf::RenderWindow& rw;
 	sf::Font font;
 
 	void EnableButton();
-	bool InButtonBounds(ConnectionButtons btn);
-	ConnectionButtons AddButton(std::string name = "a", sf::IpAddress adress = "0.0.0.0", float x = -1, float y= -1);
+	bool InButtonBounds(ConnectionButton btn);
+	ConnectionButton AddButton(std::string name = "a", sf::IpAddress adress = "0.0.0.0", float x = -1, float y= -1);
 	void FillButtonList(std::vector<serverTuple>);
 
-	std::vector<ConnectionButtons> paginationBttns;
-	std::vector<ConnectionButtons> btns;
+	std::vector<ConnectionButton> paginationBttns;
+	std::vector<ConnectionButton> btns;
+	ConnectionButton refreshBtn;
 public:
 	inline sf::IpAddress getSelectedIpAdress() { return SelectedIP; }
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
