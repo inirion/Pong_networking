@@ -18,6 +18,7 @@ class Lobby:public sf::Drawable
 {
 private:
 	unsigned short pageNumber;
+	sf::IpAddress SelectedIP;
 	float yOffest;
 	float buttonHeight;
 	float buttonWidth;
@@ -32,6 +33,7 @@ private:
 	std::vector<ConnectionButtons> paginationBttns;
 	std::vector<ConnectionButtons> btns;
 public:
+	inline sf::IpAddress getSelectedIpAdress() { return SelectedIP; }
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void update(std::vector<serverTuple>,sf::Event e);
 	Lobby(sf::RenderWindow& rw);

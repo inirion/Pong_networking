@@ -36,7 +36,8 @@ void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
 				if (InButtonBounds(btn)) {
-					std::cout << ButtonText(btn) << std::endl;
+					std::cout << ButtonIP(btn) << std::endl;
+					SelectedIP = ButtonIP(btn);
 				}
 			}
 		}
@@ -48,7 +49,7 @@ void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 						std::cout << ButtonText(btn) << std::endl;
 						EnableButton();
 					}
-					else {
+					else if(ButtonText(btn) == "Prev") {
 						pageNumber--;
 						std::cout << ButtonText(btn) << std::endl;
 						EnableButton();
@@ -83,8 +84,8 @@ Lobby::Lobby(sf::RenderWindow& rw):rw(rw)
 	buttonWidth = 200;
 	buttonHeight = rw.getSize().x / 5 - 40;
 
-	for (int i = 0, j = 0; i < 1; i++, j++) {
-		btns.push_back(AddButton(std::to_string(i) ,"0.0.0.0", -1,-1));
+	for (int i = 0, j = 0; i < 12; i++, j++) {
+	//	btns.push_back(AddButton(std::to_string(i) ,"0.0.0.1", -1,-1));
 	}
 	paginationBttns.push_back(AddButton("Prev","0.0.0.0", buttonWidth, rw.getSize().y - buttonHeight));
 	paginationBttns.push_back(AddButton("Next","0.0.0.0", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
@@ -92,7 +93,21 @@ Lobby::Lobby(sf::RenderWindow& rw):rw(rw)
 }
 
 void Lobby::FillButtonList(std::vector<serverTuple> connections) {
-	
+	for (auto connection : connections) {
+		if (btns.size() < connections.size()) {
+			auto it = std::find_if(btns.begin(), btns.end(), [connection](auto item) {
+				return ButtonIP(item) == ConnectionIP(connection);
+			});
+
+			if (it != btns.end()) {
+			}
+			else {
+				btns.push_back(AddButton(ConnectionText(connection), ConnectionIP(connection)));
+				std::cout << ConnectionText(connection) << " " << btns.size() << std::endl;
+				EnableButton();
+			}
+		}
+	}
 }
 
 ConnectionButtons Lobby::AddButton(std::string name, sf::IpAddress adress, float x, float y) {
@@ -100,10 +115,11 @@ ConnectionButtons Lobby::AddButton(std::string name, sf::IpAddress adress, float
 	sf::Text text;
 
 	(int)yOffest % 5 == 0 ? yOffest = 0 : yOffest= yOffest;
-
 	x == -1 ? x = 0: x = x;
 	y == -1 ? y = yOffest*buttonHeight : y = y;
+	x == 0 ? yOffest++ : yOffest = yOffest ;
 
+	std::cout << x << std::endl;
 	button.setOutlineThickness(2.f);
 	button.setSize(sf::Vector2f(buttonWidth, buttonHeight));
 	button.setFillColor(sf::Color::Red);
@@ -115,7 +131,7 @@ ConnectionButtons Lobby::AddButton(std::string name, sf::IpAddress adress, float
 	text.setCharacterSize(20);
 	text.setColor(sf::Color::Blue);
 	
-	yOffest++;
+	
 
 	return std::make_tuple(button, text, false, adress);
 }
