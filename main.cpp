@@ -10,10 +10,12 @@ using namespace std;
 //interrface z read packet.
 //inna konstrukcja wysy�anych pakiet�w ---> enum 1 or 2 and position example : 1 12,1 15,3 or 2 12,2 15,5 11,1 23,3 first is player position if header is 2 else ball is first.
 //odbicie lustrzane pi�ki (gracz zawsze z lewej strony przeciwnik z prawej).
-//prze��czenie mi�dzy UDP a TCP po znajdzieniu IP z brounkasta (wyklikanie z okienka na sfml).
 //interpolacja pi�ki.
 //refaktoryzacja kodu.
 //implementacja do projektu.
+//rozbicie Client na 2 osobne klasy (server-client), unieknięcie mieszania logiki klient server
+//Dokończenie implementacji metod z klasy generycznej Networking 
+//REFAKTOR
 int main(int argc, char* argv[]) {
 	sf::Vector2f(2, 2);
 	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);

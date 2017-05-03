@@ -39,8 +39,8 @@ private:
 	serverTuple onNewConnection();
 	void broadcast(STATES);
 public:
-	inline bool Send()override { return true; };
-	inline bool Recive() override { return true; };
+	inline bool Send(sf::Packet)override { return true; };
+	inline sf::Packet Recive() override { return sf::Packet(); };
 
 	void update();
 	void close();

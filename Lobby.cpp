@@ -137,7 +137,6 @@ ConnectionButton Lobby::AddButton(std::string name, sf::IpAddress adress, float 
 	y == -1 ? y = yOffest*buttonHeight : y = y;
 	x == 0 ? yOffest++ : yOffest = yOffest ;
 
-	std::cout << x << std::endl;
 	button.setOutlineThickness(2.f);
 	button.setSize(sf::Vector2f(buttonWidth, buttonHeight));
 	button.setFillColor(sf::Color::Red);

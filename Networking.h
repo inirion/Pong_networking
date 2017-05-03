@@ -9,8 +9,8 @@ protected:
 	T s;
 
 public:
-	virtual bool Send() = 0;
-	virtual bool Recive() = 0;
+	virtual bool Send(sf::Packet) = 0;
+	virtual sf::Packet Recive() = 0;
 
 	inline sf::Packet& operator <<(sf::Packet& packet) {
 		return this->packet = packet;
