@@ -1,17 +1,21 @@
 #pragma once
 #include <SFML\Network.hpp>
 #include "Networking.h"
+#include "Config.h"
 #include <iostream>
 
-class Client : public Networking<sf::TcpSocket>
+class Server : public Networking<sf::TcpSocket>
 {
 private:
-	sf::IpAddress ip;
+	sf::Packet packet;
+	sf::TcpListener listener;
+
 public:
-	bool setConnection(sf::IpAddress);
+	bool setConnection();
+
 	bool Send(sf::Packet)override;
 	bool Recive() override;
 	inline sf::Packet getPacket() { return packet; };
-	Client();
-	~Client();
+	Server();
+	~Server();
 };

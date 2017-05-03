@@ -4,7 +4,7 @@
 class Config {
 
 public:
-
+	static bool TCPstart;
 	static sf::Clock clock;
 	static sf::Clock FPSclock;
 	static float dtime;
@@ -12,6 +12,7 @@ public:
 	static bool isPongPlaying;
 	static bool inited;
 	static void init();
+	static unsigned short port;
 
 };
 
