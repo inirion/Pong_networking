@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SFML\Network.hpp>
+#include <SFML/Network.hpp>
 #include "Pong.h"
 #include "Client.h"
 #include "Config.h"

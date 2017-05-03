@@ -1,4 +1,4 @@
-#include<SFML\Graphics.hpp>
+#include<SFML/Graphics.hpp>
 #include "Config.h"
 
 sf::Clock Config::clock;
