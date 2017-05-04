@@ -17,7 +17,6 @@ using namespace std;
 //rozbicie Client na 2 osobne klasy (server-client), unieknięcie mieszania logiki klient server
 //Dokończenie implementacji metod z klasy generycznej Networking 
 //REFAKTOR
-// Przy polaczeniu TCP -> opcja powrotu do lobby i stworzenia serwera / nasluchiwania jako klient
 int main(int argc, char* argv[]) {
 	sf::Vector2f(2, 2);
 	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);
