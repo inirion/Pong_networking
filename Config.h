@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 class Config {
 
@@ -12,6 +12,7 @@ public:
 	static bool isPongPlaying;
 	static bool inited;
 	static void init();
+	static unsigned short port;
 
 };
 

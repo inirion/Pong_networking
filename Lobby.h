@@ -1,6 +1,6 @@
 #pragma once
-#include <SFML\Graphics\Drawable.hpp>
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics.hpp>
 #include "Broadcaster.h"
 
 #define ButtonPosition(btn) (std::get<ConnectionFields::BUTTON>(btn).getPosition())

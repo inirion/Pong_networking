@@ -1,4 +1,4 @@
-#include<SFML\Graphics.hpp>
+#include<SFML/Graphics.hpp>
 #include "Config.h"
 
 sf::Clock Config::clock;
@@ -8,6 +8,9 @@ bool Config::isServer = false;
 bool Config::inited = false;
 bool Config::isPongPlaying = false;
 bool Config::TCPstart = false;
+
+unsigned short Config::port = 50001;
+
 
 void Config::init() {
 	if (!inited) {

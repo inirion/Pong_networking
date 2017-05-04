@@ -28,9 +28,9 @@ enum TupleFields { IPADRESS, NAME, STATE, TIMESTAMP};
 class Broadcaster : public Networking<sf::UdpSocket>
 {
 private:
-	unsigned short broadcastPort;
 	sf::Int32 lastFrameTime;
 	const std::string serverName;
+	sf::IpAddress incomingConnectionAddress;
 	std::vector<serverTuple> conns;
 	sf::Text list;
 	bool checkNewConn();
@@ -39,13 +39,15 @@ private:
 	serverTuple onNewConnection();
 	void broadcast(STATES);
 public:
-	inline bool Send(sf::Packet)override { return true; };
-	inline sf::Packet Recive() override { return sf::Packet(); };
+
+	bool Send(sf::Packet)override;
+	bool Recive() override;
+
 
 	void update();
 	void close();
 	std::vector<serverTuple> getConns();
-	Broadcaster(unsigned short broadcastPort, const std::string &serverName = "");
+	Broadcaster(const std::string &serverName = "");
 	~Broadcaster();
 };
 

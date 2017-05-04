@@ -3,41 +3,28 @@
 bool Client::setConnection(sf::IpAddress ip)
 {
 	this->ip = ip;
-	if (Config::isServer) {
-		if (listener.accept(tcpSocket) != sf::Socket::Done)
-		{
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-	else {
-		sf::Socket::Status status = tcpSocket.connect(ip, port);
-		if (status != sf::Socket::Done) {
-			return false;
-		}else
-		return true;
-	}
+
+	if (socket.connect(ip, port) != sf::Socket::Done) return false;
+	else return true;
+
 }
-sf::Socket::Status Client::Send(sf::Packet packet)
+bool Client::Send(sf::Packet packet)
 {
-	return tcpSocket.send(packet);
+	if (socket.send(packet) == sf::TcpSocket::Done) return true;
+	else return false;
 }
 
-sf::Socket::Status Client::Recive()
+bool Client::Recive()
 {
-	return tcpSocket.receive(packet);
+	if (socket.receive(packet) == sf::TcpSocket::Done) return true;
+	else return false;
 }
 
- Client::Client():port(50001)
+ Client::Client():Networking(Config::port)
 {
-	listener.setBlocking(false);
-	tcpSocket.setBlocking(false);
-	if (listener.listen(port) != sf::Socket::Done)
-	{
-		throw "Couldn't connect socket =(";
-	}
+
+	socket.setBlocking(false);
+
 }
 
  Client::~Client()

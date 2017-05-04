@@ -1,16 +1,20 @@
 #pragma once
-#include <SFML\Network.hpp>
+
+#include <SFML/Network.hpp>
+
 template <class T>
 class Networking
 {
 protected:
 	unsigned short port;
 	sf::Packet packet;
-	T s;
+
+	T socket;
 
 public:
 	virtual bool Send(sf::Packet) = 0;
-	virtual sf::Packet Recive() = 0;
+	virtual bool Recive() = 0;
+
 
 	inline sf::Packet& operator <<(sf::Packet& packet) {
 		return this->packet = packet;
@@ -19,7 +23,8 @@ public:
 		return this->packet;
 	}
 
-	Networking(const unsigned short port) :port(port) {
-	} ;
+
+	Networking(const unsigned short port) :port(port) {} ;
+
 	~Networking() {};
 };
