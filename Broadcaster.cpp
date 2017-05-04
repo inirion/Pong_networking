@@ -37,12 +37,15 @@ std::vector<serverTuple> Broadcaster::getConns()
 	return conns;
 }
 
+
 Broadcaster::Broadcaster( const std::string &serverName) : serverName(serverName), Networking<sf::UdpSocket>(Config::port)
+
 {
 	if (socket.bind(Config::port) != sf::UdpSocket::Done) {
 		throw "Coudn't bind broadcast socket";
 	}
 	else {
+		//conns.push_back(std::make_tuple("0.0.0.0", "asd", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds()));
 		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
 		socket.setBlocking(false);
 	}
@@ -72,6 +75,7 @@ bool Broadcaster::checkNewConn()
 		}
 	}
 	
+  
 	for (size_t i = 0; i < conns.size(); i++) {
 		if (mticks() - std::get<TupleFields::TIMESTAMP>(conns[i]) > 5000) {
 			conns.erase(conns.begin() + i);
@@ -103,8 +107,10 @@ serverTuple Broadcaster::onNewConnection()
 		packet >> ENUM >> name;
 		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, mticks());
 	}
+
 	else {
 		return std::make_tuple("0.0.0.0", "", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds());
+
 	}
 }
 
@@ -129,6 +135,7 @@ bool Broadcaster::Send(sf::Packet p)
 {
 	if (socket.send(p, "25.255.255.255", Config::port) == sf::UdpSocket::Done) return true;
 	else return false;
+
 }
 
 Broadcaster::~Broadcaster()

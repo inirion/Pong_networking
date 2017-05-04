@@ -18,6 +18,7 @@ using namespace std;
 //Dokończenie implementacji metod z klasy generycznej Networking 
 //REFAKTOR
 // Przy polaczeniu TCP -> opcja powrotu do lobby i stworzenia serwera / nasluchiwania jako klient
+
 int main(int argc, char* argv[]) {
 	sf::Vector2f(2, 2);
 	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);
@@ -40,6 +41,7 @@ int main(int argc, char* argv[]) {
 
 		try {
 			b = new Broadcaster(serverName);
+
 		}
 		catch (const char *e) {
 			cout << e << endl;
@@ -47,7 +49,9 @@ int main(int argc, char* argv[]) {
 		
 	}
 	else {
+
 		b = new Broadcaster();
+
 		Config::isServer = false;
 	}
 
@@ -94,10 +98,12 @@ int main(int argc, char* argv[]) {
 		if (!Config::TCPstart) {
 			b->update();
 			if (Config::isServer) {
+
 				Config::TCPstart = s.setConnection();
 			}
 			else {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
+
 			}
 			l.update(b->getConns(), e);
 			window.draw(l);
@@ -119,6 +125,7 @@ int main(int argc, char* argv[]) {
 				}
 				}	
 			}
+
 		
 		if (Config::isPongPlaying) {
 			pong->update();

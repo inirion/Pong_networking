@@ -3,8 +3,10 @@
 bool Client::setConnection(sf::IpAddress ip)
 {
 	this->ip = ip;
+
 	if (socket.connect(ip, port) != sf::Socket::Done) return false;
 	else return true;
+
 }
 bool Client::Send(sf::Packet packet)
 {
@@ -20,7 +22,9 @@ bool Client::Recive()
 
  Client::Client():Networking(Config::port)
 {
+
 	socket.setBlocking(false);
+
 }
 
  Client::~Client()
