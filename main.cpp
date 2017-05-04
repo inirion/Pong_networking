@@ -104,6 +104,7 @@ int main(int argc, char* argv[]) {
 		else {
 			if (Config::isServer) {
 				std::string name;
+				std::cout << "wpisz jakiegos stringa" << std::endl;
 				cin >> name;
 				sf::Packet p;
 				p << name;
@@ -113,7 +114,7 @@ int main(int argc, char* argv[]) {
 				if(c.Recive()) {
 					std::string a;
 					c.getPacket() >> a;
-					std::cout <<"działa " <<  a << std::endl;
+					std::cout << a << std::endl;
 				}
 				}	
 			}
