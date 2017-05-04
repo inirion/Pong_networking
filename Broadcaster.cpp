@@ -72,7 +72,6 @@ bool Broadcaster::checkNewConn()
 		}
 	}
 	
-	
 	for (size_t i = 0; i < conns.size(); i++) {
 		if (mticks() - std::get<TupleFields::TIMESTAMP>(conns[i]) > 5000) {
 			conns.erase(conns.begin() + i);

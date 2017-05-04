@@ -19,7 +19,6 @@ public:
 		return this->packet;
 	}
 
-	Networking(const unsigned short port) :port(port) {
-	} ;
+	Networking(const unsigned short port) :port(port) {} ;
 	~Networking() {};
 };

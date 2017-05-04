@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
 				cin >> name;
 				sf::Packet p;
 				p << name;
-				s.Send(p);
+				if (s.Send(p)) std::cout << "Wysłano" << std::endl;
 			}
 			else {
 				if(c.Recive()) {

@@ -6,7 +6,7 @@ bool Server::setConnection()
 	else return true;
 }
 
-bool Server::Send(sf::Packet)
+bool Server::Send(sf::Packet packet)
 {
 	if(socket.send(packet) == sf::TcpSocket::Done) return true;
 	else return false;
