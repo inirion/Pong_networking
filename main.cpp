@@ -20,6 +20,7 @@ using namespace std;
 //Dokończenie implementacji metod z klasy generycznej Networking 
 //REFAKTOR
 // Przy polaczeniu TCP -> opcja powrotu do lobby i stworzenia serwera / nasluchiwania jako klient
+// Spawnowanie n-child processow dla testów
 
 int main(int argc, char* argv[]) {
 
