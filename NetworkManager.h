@@ -28,7 +28,8 @@ class NetworkManager
 private:
 	AddressVectorPtr getInterfacesUnix();
 	AddressVectorPtr getInterfacesWin();
-	AddressTuple makeTuple(const std::string &host, const std::string &mask);
+	AddressTuple makeTupleWin(const std::string &host, const std::string &mask);
+	AddressTuple makeTupleUnix(const std::string &host, const std::string &mask);
 public:
 	NetworkManager();
 	~NetworkManager();

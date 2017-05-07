@@ -65,13 +65,13 @@ AddressVectorPtr NetworkManager::getInterfacesWin()
 		IPAddresses[0].S_un.S_addr = (u_long)pIPAddrTable->table[i].dwAddr;
 		IPAddresses[1].S_un.S_addr = (u_long)pIPAddrTable->table[i].dwMask;
 
-		tmp.push_back(makeTuple(inet_ntoa(IPAddresses[0]), inet_ntoa(IPAddresses[1])));
+		tmp.push_back(makeTupleWin(inet_ntoa(IPAddresses[0]), inet_ntoa(IPAddresses[1])));
 	}
 	return std::make_shared<std::vector<AddressTuple>>(tmp);
 #endif	
 }
 
-AddressTuple NetworkManager::makeTuple(const std::string & host, const std::string & mask)
+AddressTuple NetworkManager::makeTupleWin(const std::string & host, const std::string & mask)
 {
 
 	IN_ADDR host_addr, mask_addr, net_addr, broadcast_addr;
@@ -97,6 +97,11 @@ AddressTuple NetworkManager::makeTuple(const std::string & host, const std::stri
 	std::get<AddressTupleFields::NET>(tmpTuple) = inet_ntoa(net_addr);
 
 	return tmpTuple;
+}
+
+AddressTuple NetworkManager::makeTupleUnix(const std::string & host, const std::string & mask)
+{
+	return AddressTuple();
 }
 
 
