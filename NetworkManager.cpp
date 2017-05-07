@@ -33,8 +33,7 @@ AddressVectorPtr NetworkManager::getInterfacesWin()
 #else
 
 	PMIB_IPADDRTABLE pIPAddrTable;
-	DWORD dwSize = 0;
-	DWORD dwRetVal = 0;
+	DWORD dwSize = 0, dwRetVal = 0;
 	LPVOID lpMsgBuf;
 
 	pIPAddrTable = new MIB_IPADDRTABLE[sizeof(MIB_IPADDRTABLE)];
