@@ -23,8 +23,6 @@
 	#include <netdb.h>
 	#include <unistd.h>
 	#include <linux/if_link.h>
-
-
 #endif
 
 using AddressTuple = std::tuple<sf::IpAddress, sf::IpAddress, sf::IpAddress, sf::IpAddress>;
