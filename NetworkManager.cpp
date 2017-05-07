@@ -51,11 +51,10 @@ AddressVectorPtr NetworkManager::getInterfacesWin()
 	}
 	
 	if ((dwRetVal = GetIpAddrTable(pIPAddrTable, &dwSize, 0)) != NO_ERROR) {
-		printf("GetIpAddrTable failed with error %d\n", dwRetVal);
-		if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dwRetVal, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),       // Default language
-			(LPTSTR)& lpMsgBuf, 0, NULL)) {
-				std::cout << "Error: " << lpMsgBuf << std::endl;
-				delete lpMsgBuf;
+		std::cout << "GetIpAddrTable failed with error: " << dwRetVal << std::endl;
+		if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dwRetVal, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)& lpMsgBuf, 0, NULL)) {
+			std::cout << "Error: " << lpMsgBuf << std::endl;
+			delete lpMsgBuf;
 		}
 		return AddressVectorPtr(nullptr);
 	}	
