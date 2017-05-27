@@ -10,18 +10,6 @@
 #include "NetworkManager.h"
 
 using namespace std;
-//interrface z read packet.
-//inna konstrukcja wysy�anych pakiet�w ---> enum 1 or 2 and position example : 1 12,1 15,3 or 2 12,2 15,5 11,1 23,3 first is player position if header is 2 else ball is first.
-//odbicie lustrzane pi�ki (gracz zawsze z lewej strony przeciwnik z prawej).
-//interpolacja pi�ki.
-//refaktoryzacja kodu.
-//implementacja do projektu.
-//rozbicie Client na 2 osobne klasy (server-client), unieknięcie mieszania logiki klient server
-//Dokończenie implementacji metod z klasy generycznej Networking 
-//REFAKTOR
-// Przy polaczeniu TCP -> opcja powrotu do lobby i stworzenia serwera / nasluchiwania jako klient
-// Spawnowanie n-child processow dla testów
-
 int main(int argc, char* argv[]) {
 
 	NetworkManager nm;
@@ -67,26 +55,8 @@ int main(int argc, char* argv[]) {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
 			}
 		}
-		else {
-			l.SendStartButtonClick(e,c,s);
-			if (Config::isServer) {
-				std::string name;
-				std::cout << "wpisz jakiegos stringa" << std::endl;
-				cin >> name;
-				sf::Packet p;
-				p << name;
-				if (s.Send(p)) std::cout << "Wysłano" << std::endl;
-			}
-			else {
-				if(c.Recive()) {
-					std::string a;
-					c.getPacket() >> a;
-					std::cout << a << std::endl;
-				}
-				}
-			}
 		if (!Config::isPongPlaying) {
-			l.update(e);
+			l.update(e,c,s);
 			window.draw(l);
 		}
 		if (Config::isPongPlaying) {

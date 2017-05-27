@@ -48,11 +48,11 @@ private:
 public:
 	Broadcaster *b;
 	void SendStartButtonClick(sf::Event e, Client &c, Server &s);
-	void GetStartButtonClick(sf::Event e, Client &c, Server &s);
+	void GetStartButtonClick(Client &c, Server &s);
 	inline void PlayButtonVisible(bool t) { PlayButtonVisability(playBtn) = t; }
 	inline sf::IpAddress getSelectedIpAdress() { return SelectedIP; }
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	void update(sf::Event e);
+	void update(sf::Event e, Client &c, Server &s);
 	Lobby(sf::RenderWindow& rw, std::string name);
 	~Lobby();
 };

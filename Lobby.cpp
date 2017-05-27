@@ -21,7 +21,7 @@ void Lobby::SendStartButtonClick(sf::Event e, Client &c, Server &s)
 	}
 }
 
-void Lobby::GetStartButtonClick(sf::Event e, Client & c, Server & s)
+void Lobby::GetStartButtonClick(Client & c, Server & s)
 {
 	if (Config::isServer) 
 	if (!PlayButtonVisability(playBtn)) {
@@ -29,7 +29,7 @@ void Lobby::GetStartButtonClick(sf::Event e, Client & c, Server & s)
 			std::string a;
 			s.getPacket() >> a;
 			std::cout << a << std::endl;
-			if (a == "Play") {
+			if (a.compare("Play")) {
 				PlayButtonVisability(playBtn) = true;
 			}
 		}
@@ -74,10 +74,14 @@ bool Lobby::InButtonBounds(sf::RectangleShape btn) {
 	return false;
 }
 
-void Lobby::update(sf::Event e)
+void Lobby::update(sf::Event e,Client &c, Server &s)
 {
 	if (!Config::TCPstart) {
 		b->update();
+	}
+	else {
+		SendStartButtonClick(e, c, s);
+		GetStartButtonClick(c, s);
 	}
 	
 	if (e.type == sf::Event::MouseButtonReleased) {
