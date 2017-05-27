@@ -78,8 +78,7 @@ void Lobby::update(sf::Event e)
 				}
 			}
 		}
-		
-		
+
 		if (ButtonVisability(refreshBtn)) {
 			
 			if (InButtonBounds(Button(refreshBtn))) {
@@ -87,6 +86,13 @@ void Lobby::update(sf::Event e)
 				
 			}
 		}
+
+		if (PlayButtonVisability(playBtn)) {
+			if (InButtonBounds(PlayButton(playBtn))) {
+				std::cout << "asd" << std::endl;
+			}
+		}
+
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x + 1, sf::Mouse::getPosition().y));
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x - 1, sf::Mouse::getPosition().y));
 	}

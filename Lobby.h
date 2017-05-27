@@ -11,9 +11,9 @@
 #define Button(btn) (std::get<Fields::BUTTON>(btn))
 #define Text(btn) (std::get<Fields::TEXT>(btn))
 
-#define PlayButtonVisability(btn) (std::get<2>(btn))
-#define PlayButton(btn) (std::get<0>(btn))
-#define PlayText(btn) (std::get<1>(btn))
+#define PlayButtonVisability(btn) (std::get<Fields::VISIBILITY>(btn))
+#define PlayButton(btn) (std::get<Fields::BUTTON>(btn))
+#define PlayText(btn) (std::get<Fields::TEXT>(btn))
 
 using ConnectionButton = std::tuple<sf::RectangleShape, sf::Text,bool,sf::IpAddress>;
 using ButtonTuple = std::tuple<sf::RectangleShape, sf::Text, bool>;

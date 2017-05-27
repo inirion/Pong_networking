@@ -61,7 +61,6 @@ int main(int argc, char* argv[]) {
 		
 		if (!Config::TCPstart) {
 			if (Config::isServer) {
-
 				Config::TCPstart = s.setConnection();
 			}
 			else {
