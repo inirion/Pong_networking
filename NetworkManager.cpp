@@ -83,13 +83,13 @@ AddressTuple NetworkManager::makeTupleWin(const std::string & host, const std::s
 	char * host_ip = Helpers::immutableStringToCharPtr(host);
 	char * netmask = Helpers::immutableStringToCharPtr(mask);
 
-	InetPton(AF_INET, host_ip, &host_addr);
-	InetPton(AF_INET, netmask, &mask_addr);
+	InetPton(AF_INET, (PCWSTR)host_ip, &host_addr);
+	InetPton(AF_INET, (PCWSTR)netmask, &mask_addr);
 
 	net_addr.S_un.S_addr = host_addr.S_un.S_addr & mask_addr.S_un.S_addr;
 	broadcast_addr.S_un.S_addr = net_addr.S_un.S_addr | ~mask_addr.S_un.S_addr;
 
-	InetNtop(AF_INET, &net_addr, net_address, INET_ADDRSTRLEN);
+	InetNtop(AF_INET, &net_addr, (PWSTR)net_address, INET_ADDRSTRLEN);
 
 	std::get<AddressTupleFields::ASSIGNED_IP>(tmpTuple) = host;
 	std::get<AddressTupleFields::SUBNET>(tmpTuple) = mask;
