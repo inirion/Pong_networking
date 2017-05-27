@@ -35,8 +35,6 @@ int main(int argc, char* argv[]) {
 	Broadcaster *b;
 	char role;
 	cin >> role;
-
-	
 	if (role == 's') {
 
 		Config::isServer = true;
@@ -61,32 +59,6 @@ int main(int argc, char* argv[]) {
 		Config::isServer = false;
 	}
 
-	/*
-	// TODO: clients should be created depending on ip returned from broadcaster
-	if (role == 'c') {
-		Config::isServer = false;
-		try {
-			//25.75.100.22
-			//25.43.221.172
-			c = new Client(50001, "25.43.221.172");
-		}
-		catch (const char *e) {
-			cout << e << endl;
-		}
-		pong = new Pong(window, *c);
-	}
-	else if (role == 's') {
-		Config::isServer = true;
-		try {
-			c = new Client(50001, "0.0.0.0");
-		}
-		catch (const char *e) {
-			cout << e << endl;
-		}
-		pong = new Pong(window, *c);
-	}
-	
-	*/
 	Lobby l(window);
 	while (window.isOpen()) {
 		sf::Event e;
@@ -115,6 +87,7 @@ int main(int argc, char* argv[]) {
 			window.draw(l);
 		}
 		else {
+			
 			if (Config::isServer) {
 				std::string name;
 				std::cout << "wpisz jakiegos stringa" << std::endl;
@@ -129,10 +102,8 @@ int main(int argc, char* argv[]) {
 					c.getPacket() >> a;
 					std::cout << a << std::endl;
 				}
-				}	
+				}
 			}
-
-		
 		if (Config::isPongPlaying) {
 			pong->update();
 			window.draw(*pong);
