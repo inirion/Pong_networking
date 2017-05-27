@@ -1,11 +1,13 @@
 #include <iostream>
 #include <SFML/Network.hpp>
+
 #include "Pong.h"
 #include "Client.h"
 #include "Config.h"
 #include "Broadcaster.h"
 #include "Server.h"
 #include "Lobby.h"
+#include "NetworkManager.h"
 
 using namespace std;
 //interrface z read packet.
@@ -18,8 +20,12 @@ using namespace std;
 //Dokończenie implementacji metod z klasy generycznej Networking 
 //REFAKTOR
 // Przy polaczeniu TCP -> opcja powrotu do lobby i stworzenia serwera / nasluchiwania jako klient
+// Spawnowanie n-child processow dla testów
 
 int main(int argc, char* argv[]) {
+
+	NetworkManager nm;
+
 	sf::Vector2f(2, 2);
 	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
