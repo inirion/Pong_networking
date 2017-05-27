@@ -29,13 +29,15 @@ using AddressTuple = std::tuple<sf::IpAddress, sf::IpAddress, sf::IpAddress, sf:
 using AddressVectorPtr = std::shared_ptr<std::vector<AddressTuple>>;
 enum AddressTupleFields { ASSIGNED_IP, NET, SUBNET, BROADCAST };
 
-class NetworkManager
+class NetworkManager 
 {
 private:
 	AddressVectorPtr getInterfacesUnix();
 	AddressVectorPtr getInterfacesWin();
 	AddressTuple makeTupleWin(const std::string &host, const std::string &mask);
 	AddressTuple makeTupleUnix(const std::string &host, const std::string &mask);
+
+	sf::RenderWindow& rw;
 public:
 	NetworkManager();
 	~NetworkManager();

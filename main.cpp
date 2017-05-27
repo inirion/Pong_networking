@@ -7,7 +7,7 @@
 #include "Broadcaster.h"
 #include "Server.h"
 #include "Lobby.h"
-#include "NetworkManager.h"
+#include "NetworkManagerGui.h"
 
 using namespace std;
 //interrface z read packet.
@@ -59,6 +59,8 @@ int main(int argc, char* argv[]) {
 		}
 		window.clear(sf::Color(255, 255, 255));
 		
+
+
 		if (!Config::TCPstart) {
 			if (Config::isServer) {
 
