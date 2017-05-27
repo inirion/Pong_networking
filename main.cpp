@@ -67,10 +67,6 @@ int main(int argc, char* argv[]) {
 			else {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
 			}
-			if (!Config::isPongPlaying) {
-				l.update(e);
-				window.draw(l);
-			}
 		}
 		else {
 			if (Config::isServer) {
@@ -89,6 +85,10 @@ int main(int argc, char* argv[]) {
 				}
 				}
 			}
+		if (!Config::isPongPlaying) {
+			l.update(e);
+			window.draw(l);
+		}
 		if (Config::isPongPlaying) {
 			pong->update();
 			window.draw(*pong);

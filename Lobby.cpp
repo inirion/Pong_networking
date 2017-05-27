@@ -136,7 +136,8 @@ void Lobby::FillButtonList(std::vector<serverTuple> connections) {
 	btns.clear();
 	yOffest = 0;
 	for (auto connection : connections) {
-		btns.push_back(AddButton(ConnectionText(connection), ConnectionIP(connection)));
+		if(ConnectionIP(connection) != sf::IpAddress("0.0.0.0"))
+			btns.push_back(AddButton(ConnectionText(connection), ConnectionIP(connection)));
 	}
 	EnableButton();
 }
