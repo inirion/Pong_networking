@@ -1,11 +1,13 @@
 #include <iostream>
 #include <SFML/Network.hpp>
+
 #include "Pong.h"
 #include "Client.h"
 #include "Config.h"
 #include "Broadcaster.h"
 #include "Server.h"
 #include "Lobby.h"
+#include "NetworkManager.h"
 
 using namespace std;
 //interrface z read packet.
@@ -18,70 +20,32 @@ using namespace std;
 //Dokończenie implementacji metod z klasy generycznej Networking 
 //REFAKTOR
 // Przy polaczeniu TCP -> opcja powrotu do lobby i stworzenia serwera / nasluchiwania jako klient
+// Spawnowanie n-child processow dla testów
 
 int main(int argc, char* argv[]) {
+
+	NetworkManager nm;
+
 	sf::Vector2f(2, 2);
 	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
 	Pong *pong;
 	Client c;
 	Server s;
-	Broadcaster *b;
+	std::string serverName;
 	char role;
 	cin >> role;
-
-	
 	if (role == 's') {
 
 		Config::isServer = true;
-
-		std::string serverName;
 		cout << "Enter server name: ";
 		cin >> serverName;
-
-		try {
-			b = new Broadcaster(serverName);
-
-		}
-		catch (const char *e) {
-			cout << e << endl;
-		}
-		
 	}
 	else {
-
-		b = new Broadcaster();
-
 		Config::isServer = false;
 	}
 
-	/*
-	// TODO: clients should be created depending on ip returned from broadcaster
-	if (role == 'c') {
-		Config::isServer = false;
-		try {
-			//25.75.100.22
-			//25.43.221.172
-			c = new Client(50001, "25.43.221.172");
-		}
-		catch (const char *e) {
-			cout << e << endl;
-		}
-		pong = new Pong(window, *c);
-	}
-	else if (role == 's') {
-		Config::isServer = true;
-		try {
-			c = new Client(50001, "0.0.0.0");
-		}
-		catch (const char *e) {
-			cout << e << endl;
-		}
-		pong = new Pong(window, *c);
-	}
-	
-	*/
-	Lobby l(window);
+	Lobby l(window, serverName);
 	while (window.isOpen()) {
 		sf::Event e;
 		while (window.pollEvent(e)) {
@@ -94,21 +58,17 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		window.clear(sf::Color(255, 255, 255));
-
+		
 		if (!Config::TCPstart) {
-			b->update();
 			if (Config::isServer) {
-
 				Config::TCPstart = s.setConnection();
 			}
 			else {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
-
 			}
-			l.update(b->getConns(), e);
-			window.draw(l);
 		}
 		else {
+			l.SendStartButtonClick(e,c,s);
 			if (Config::isServer) {
 				std::string name;
 				std::cout << "wpisz jakiegos stringa" << std::endl;
@@ -123,10 +83,12 @@ int main(int argc, char* argv[]) {
 					c.getPacket() >> a;
 					std::cout << a << std::endl;
 				}
-				}	
+				}
 			}
-
-		
+		if (!Config::isPongPlaying) {
+			l.update(e);
+			window.draw(l);
+		}
 		if (Config::isPongPlaying) {
 			pong->update();
 			window.draw(*pong);
@@ -134,6 +96,5 @@ int main(int argc, char* argv[]) {
 		
 		window.display();
 	}
-	delete b;
 	return 0;
 }
