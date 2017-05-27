@@ -62,9 +62,8 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		window.clear(sf::Color(255, 255, 255));
-
+		
 		if (!Config::TCPstart) {
-			
 			if (Config::isServer) {
 
 				Config::TCPstart = s.setConnection();
@@ -72,7 +71,6 @@ int main(int argc, char* argv[]) {
 			else {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
 			}
-			
 		}
 		else {
 			if (Config::isServer) {
@@ -99,7 +97,6 @@ int main(int argc, char* argv[]) {
 			l.update(e);
 			window.draw(l);
 		}
-		
 		window.display();
 	}
 	return 0;

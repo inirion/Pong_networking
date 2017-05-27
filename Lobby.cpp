@@ -33,27 +33,30 @@ void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 			target.draw(PlayButton(playBtn));
 			target.draw(PlayText(playBtn));
 		}
-
 	}
 }
 
 
 bool Lobby::InButtonBounds(sf::RectangleShape btn) {
-	if (sf::Mouse::getPosition(rw).x > btn.getSize().x &&
-		sf::Mouse::getPosition(rw).x < btn.getSize().x + btn.getSize().x &&
-		sf::Mouse::getPosition(rw).y > btn.getSize().y &&
-		sf::Mouse::getPosition(rw).y < btn.getSize().y + btn.getSize().y
+	//std::cout << "Mouse x : " << sf::Mouse::getPosition(rw).x << " Mouse Y : " << sf::Mouse::getPosition(rw).y << std::endl;
+	//std::cout << "Button x : " << btn.getSize().x << " button Y : " << btn.getSize().y << std::endl;
+	if (sf::Mouse::getPosition(rw).x > btn.getPosition().x &&
+		sf::Mouse::getPosition(rw).x < btn.getPosition().x + btn.getSize().x &&
+		sf::Mouse::getPosition(rw).y > btn.getPosition().y &&
+		sf::Mouse::getPosition(rw).y < btn.getPosition().y + btn.getSize().y
 		) return true;
 	return false;
 }
 
 void Lobby::update(sf::Event e)
 {
+	
 	if (!Config::TCPstart) {
 		b->update();
 	}
 	
 	if (e.type == sf::Event::MouseButtonReleased) {
+		
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
 				if (InButtonBounds(Button(btn))) {
@@ -62,6 +65,7 @@ void Lobby::update(sf::Event e)
 				}
 			}
 		}
+		
 		for (auto btn : paginationBttns) {
 			if (ButtonVisability(btn)) {
 				if (InButtonBounds(Button(btn))) {
@@ -76,9 +80,14 @@ void Lobby::update(sf::Event e)
 				}
 			}
 		}
+		
+		
 		if (ButtonVisability(refreshBtn)) {
+			
 			if (InButtonBounds(Button(refreshBtn))) {
+				std::cout << "sad" << std::endl;
 				FillButtonList(b->getConns());
+				
 			}
 		}
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x + 1, sf::Mouse::getPosition().y));
@@ -104,7 +113,11 @@ void Lobby::EnableButton() {
 
 Lobby::Lobby(sf::RenderWindow& rw, std::string name):rw(rw)
 {
-	b = new Broadcaster(name);
+	if(Config::isServer)
+		b = new Broadcaster(name);
+	else
+		b = new Broadcaster();
+
 	font.loadFromFile("DroidSansMono.ttf");
 	pageNumber = 1;
 	yOffest = 0;
@@ -116,7 +129,7 @@ Lobby::Lobby(sf::RenderWindow& rw, std::string name):rw(rw)
 	paginationBttns.push_back(AddButton("Next","", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
 	refreshBtn = AddButton("Refresh", "", rw.getSize().x - buttonWidth, 0);
 	EnableButton();
-	playBtn = AddButton("Play", rw.getSize().x - buttonWidth, 0);
+	playBtn = AddButton("Play", rw.getSize().x - buttonWidth, rw.getSize().y- buttonHeight);
 	if (Config::isServer) PlayButtonVisible();
 }
 
