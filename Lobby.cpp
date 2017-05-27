@@ -10,7 +10,7 @@ SendStartButtonClick()
 
 void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	if (SelectedIP == sf::IpAddress("0.0.0.1") && !Config::isServer)
+	if (SelectedIP == sf::IpAddress("0.0.0.1"))
 	{
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
@@ -28,7 +28,7 @@ void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(Button(refreshBtn));
 		target.draw(Text(refreshBtn));
 	}
-	else {
+	if(SelectedIP == sf::IpAddress("0.0.0.2") || SelectedIP != sf::IpAddress("0.0.0.1")) {
 		if (PlayButtonVisability(playBtn)) {
 			target.draw(PlayButton(playBtn));
 			target.draw(PlayText(playBtn));
@@ -38,8 +38,6 @@ void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 
 bool Lobby::InButtonBounds(sf::RectangleShape btn) {
-	//std::cout << "Mouse x : " << sf::Mouse::getPosition(rw).x << " Mouse Y : " << sf::Mouse::getPosition(rw).y << std::endl;
-	//std::cout << "Button x : " << btn.getSize().x << " button Y : " << btn.getSize().y << std::endl;
 	if (sf::Mouse::getPosition(rw).x > btn.getPosition().x &&
 		sf::Mouse::getPosition(rw).x < btn.getPosition().x + btn.getSize().x &&
 		sf::Mouse::getPosition(rw).y > btn.getPosition().y &&
@@ -122,7 +120,10 @@ Lobby::Lobby(sf::RenderWindow& rw, std::string name):rw(rw)
 	yOffest = 0;
 	buttonWidth = 200;
 	buttonHeight = rw.getDefaultView().getSize().y / 5;
-	SelectedIP = sf::IpAddress("0.0.0.1");
+	if(Config::isServer)
+		SelectedIP = sf::IpAddress("0.0.0.2");
+	else
+		SelectedIP = sf::IpAddress("0.0.0.1");
 
 	paginationBttns.push_back(AddButton("Prev","", buttonWidth, rw.getSize().y - buttonHeight));
 	paginationBttns.push_back(AddButton("Next","", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
