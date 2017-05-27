@@ -85,7 +85,6 @@ void Lobby::update(sf::Event e)
 		if (ButtonVisability(refreshBtn)) {
 			
 			if (InButtonBounds(Button(refreshBtn))) {
-				std::cout << "sad" << std::endl;
 				FillButtonList(b->getConns());
 				
 			}

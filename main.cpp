@@ -38,14 +38,10 @@ int main(int argc, char* argv[]) {
 	if (role == 's') {
 
 		Config::isServer = true;
-
-		
 		cout << "Enter server name: ";
 		cin >> serverName;
-
 	}
 	else {
-
 		Config::isServer = false;
 	}
 
@@ -71,6 +67,10 @@ int main(int argc, char* argv[]) {
 			else {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
 			}
+			if (!Config::isPongPlaying) {
+				l.update(e);
+				window.draw(l);
+			}
 		}
 		else {
 			if (Config::isServer) {
@@ -93,10 +93,7 @@ int main(int argc, char* argv[]) {
 			pong->update();
 			window.draw(*pong);
 		}
-		else {
-			l.update(e);
-			window.draw(l);
-		}
+		
 		window.display();
 	}
 	return 0;
