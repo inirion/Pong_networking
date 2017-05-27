@@ -3,6 +3,11 @@
 
 
 
+void Lobby::
+SendStartButtonClick()
+{
+}
+
 void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	if (SelectedIP == sf::IpAddress("0.0.0.1") && !Config::isServer)
@@ -42,8 +47,11 @@ bool Lobby::InButtonBounds(sf::RectangleShape btn) {
 	return false;
 }
 
-void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
+void Lobby::update(sf::Event e)
 {
+	if (!Config::TCPstart) {
+		b->update();
+	}
 	
 	if (e.type == sf::Event::MouseButtonReleased) {
 		for (auto btn : btns) {
@@ -70,7 +78,7 @@ void Lobby::update(std::vector<serverTuple> connections,sf::Event e)
 		}
 		if (ButtonVisability(refreshBtn)) {
 			if (InButtonBounds(Button(refreshBtn))) {
-				FillButtonList(connections);
+				FillButtonList(b->getConns());
 			}
 		}
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x + 1, sf::Mouse::getPosition().y));
@@ -94,8 +102,9 @@ void Lobby::EnableButton() {
 	pageNumber*5 >= (btns.size()) ? ButtonVisability(paginationBttns[1]) = false : ButtonVisability(paginationBttns[1]) = true;
 }
 
-Lobby::Lobby(sf::RenderWindow& rw):rw(rw)
+Lobby::Lobby(sf::RenderWindow& rw, std::string name):rw(rw)
 {
+	b = new Broadcaster(name);
 	font.loadFromFile("DroidSansMono.ttf");
 	pageNumber = 1;
 	yOffest = 0;
@@ -168,4 +177,5 @@ ButtonTuple Lobby::AddButton(std::string name, float x, float y) {
 
 Lobby::~Lobby()
 {
+	delete b;
 }

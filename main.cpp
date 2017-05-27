@@ -32,34 +32,24 @@ int main(int argc, char* argv[]) {
 	Pong *pong;
 	Client c;
 	Server s;
-	Broadcaster *b;
+	std::string serverName;
 	char role;
 	cin >> role;
 	if (role == 's') {
 
 		Config::isServer = true;
 
-		std::string serverName;
+		
 		cout << "Enter server name: ";
 		cin >> serverName;
 
-		try {
-			b = new Broadcaster(serverName);
-
-		}
-		catch (const char *e) {
-			cout << e << endl;
-		}
-		
 	}
 	else {
-
-		b = new Broadcaster();
 
 		Config::isServer = false;
 	}
 
-	Lobby l(window);
+	Lobby l(window, serverName);
 	while (window.isOpen()) {
 		sf::Event e;
 		while (window.pollEvent(e)) {
@@ -74,20 +64,17 @@ int main(int argc, char* argv[]) {
 		window.clear(sf::Color(255, 255, 255));
 
 		if (!Config::TCPstart) {
-			b->update();
+			
 			if (Config::isServer) {
 
 				Config::TCPstart = s.setConnection();
 			}
 			else {
 				Config::TCPstart = c.setConnection(l.getSelectedIpAdress());
-
 			}
-			l.update(b->getConns(), e);
-			window.draw(l);
+			
 		}
 		else {
-			
 			if (Config::isServer) {
 				std::string name;
 				std::cout << "wpisz jakiegos stringa" << std::endl;
@@ -108,9 +95,12 @@ int main(int argc, char* argv[]) {
 			pong->update();
 			window.draw(*pong);
 		}
+		else {
+			l.update(e);
+			window.draw(l);
+		}
 		
 		window.display();
 	}
-	delete b;
 	return 0;
 }

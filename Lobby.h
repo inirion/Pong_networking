@@ -42,11 +42,13 @@ private:
 	ConnectionButton refreshBtn;
 	ButtonTuple playBtn;
 public:
+	Broadcaster *b;
+	void SendStartButtonClick();
 	inline void PlayButtonVisible() { PlayButtonVisability(playBtn) = true; }
 	inline sf::IpAddress getSelectedIpAdress() { return SelectedIP; }
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	void update(std::vector<serverTuple>,sf::Event e);
-	Lobby(sf::RenderWindow& rw);
+	void update(sf::Event e);
+	Lobby(sf::RenderWindow& rw, std::string name);
 	~Lobby();
 };
 
