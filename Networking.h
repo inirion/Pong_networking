@@ -13,7 +13,7 @@ protected:
 
 public:
 	virtual bool Send(sf::Packet) = 0;
-	virtual bool Recive() = 0;
+	virtual bool Recive(sf::Packet&) = 0;
 
 
 	inline sf::Packet& operator <<(sf::Packet& packet) {
@@ -22,6 +22,7 @@ public:
 	inline sf::Packet& getPacket() {
 		return this->packet;
 	}
+	inline void clearPacket() { packet.clear(); }
 
 
 	Networking(const unsigned short port) :port(port) {} ;

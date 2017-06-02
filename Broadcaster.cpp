@@ -45,7 +45,6 @@ Broadcaster::Broadcaster( const std::string &serverName) : serverName(serverName
 		throw "Coudn't bind broadcast socket";
 	}
 	else {
-		//conns.push_back(std::make_tuple("0.0.0.0", "asd", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds()));
 		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
 		socket.setBlocking(false);
 	}
@@ -101,20 +100,20 @@ void Broadcaster::printConns()
 
 serverTuple Broadcaster::onNewConnection()
 {
-	if (Recive()) {
+	sf::Packet p;
+	if (Recive(p)) {
 		int ENUM;
 		std::string name;
-		packet >> ENUM >> name;
+		p >> ENUM >> name;
 		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, mticks());
 	}
 
 	else {
 		return std::make_tuple("0.0.0.0", "", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds());
-
 	}
 }
 
-bool Broadcaster::Recive()
+bool Broadcaster::Recive(sf::Packet& packet)
 {
 	unsigned short port;
 	if (socket.receive(packet, incomingConnectionAddress, port) == sf::UdpSocket::Done) {

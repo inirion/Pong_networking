@@ -2,6 +2,10 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics.hpp>
 #include "Broadcaster.h"
+#include "Server.h"
+#include "Client.h"
+
+
 
 #define ButtonPosition(btn) (std::get<Fields::BUTTON>(btn).getPosition())
 #define ButtonSize(btn) (std::get<Fields::BUTTON>(btn).getSize())
@@ -23,6 +27,10 @@ enum Fields { BUTTON, TEXT, VISIBILITY, IP };
 class Lobby:public sf::Drawable
 {
 private:
+	enum LobbyStates {
+		PLAYPRESSED,
+		STARTGAME
+	};
 	unsigned short pageNumber;
 	sf::IpAddress SelectedIP;
 	int yOffest;
@@ -42,12 +50,14 @@ private:
 	ConnectionButton refreshBtn;
 	ButtonTuple playBtn;
 public:
+	bool startGame;
 	Broadcaster *b;
-	void SendStartButtonClick();
-	inline void PlayButtonVisible() { PlayButtonVisability(playBtn) = true; }
+	void SendStartButtonClick(sf::Event e, Client &c, Server &s);
+	void GetStartButtonClick(Client &c, Server &s);
+	inline void PlayButtonVisible(bool t) { PlayButtonVisability(playBtn) = t; }
 	inline sf::IpAddress getSelectedIpAdress() { return SelectedIP; }
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	void update(sf::Event e);
+	void update(sf::Event e, Client &c, Server &s);
 	Lobby(sf::RenderWindow& rw, std::string name);
 	~Lobby();
 };
