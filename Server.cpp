@@ -14,7 +14,8 @@ bool Server::Send(sf::Packet packet)
 
 bool Server::Recive()
 {
-	if (socket.receive(packet) == sf::TcpSocket::Done) return true;
+	packet.clear();
+	if (socket.receive(this->packet) == sf::TcpSocket::Done) return true;
 	else return false;
 }
 
