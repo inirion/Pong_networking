@@ -1,18 +1,19 @@
 #include "Lobby.h"
 #include <iostream>
 
-
-
 void Lobby::SendStartButtonClick(sf::Event e, Client &c, Server &s)
 {
 	if (e.type == sf::Event::MouseButtonReleased) {
 		if (PlayButtonVisability(playBtn)) {
 			if (InButtonBounds(PlayButton(playBtn))) {
-				if (!Config::isServer) {
-					std::string name = "Play";
+				if (Config::isServer) {
+					int i = 0;
 					sf::Packet p;
-					p << name;
-					if (c.Send(p)) std::cout << "Wys³ano" << std::endl;
+					p << i;
+					if (s.Send(p)) {
+						std::cout << "Wys³ano" << std::endl;
+						startGame = true;
+					}
 				}
 			}
 		}
@@ -23,22 +24,21 @@ void Lobby::SendStartButtonClick(sf::Event e, Client &c, Server &s)
 
 void Lobby::GetStartButtonClick(Client & c, Server & s)
 {
-	if (Config::isServer) 
-	if (!PlayButtonVisability(playBtn)) {
-		if (s.Recive()) {
-			std::string a;
-			s.getPacket() >> a;
-			std::cout << a << std::endl;
-			if (a.compare("Play")) {
-				PlayButtonVisability(playBtn) = true;
+	if (!Config::isServer) 
+		if (c.Recive()) {
+			int a;
+			c.getPacket() >> a;
+			if (0 == a) {
+				startGame = true;
 			}
 		}
-	}
 }
+
+
 
 void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	if (SelectedIP == sf::IpAddress("0.0.0.1"))
+	if (SelectedIP == sf::IpAddress("0.0.0.1") && !Config::isServer)
 	{
 		for (auto btn : btns) {
 			if (ButtonVisability(btn)) {
@@ -56,7 +56,7 @@ void Lobby::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(Button(refreshBtn));
 		target.draw(Text(refreshBtn));
 	}
-	if(SelectedIP == sf::IpAddress("0.0.0.2") || SelectedIP != sf::IpAddress("0.0.0.1")) {
+	if(Config::isServer) {
 		if (PlayButtonVisability(playBtn)) {
 			target.draw(PlayButton(playBtn));
 			target.draw(PlayText(playBtn));
@@ -76,6 +76,7 @@ bool Lobby::InButtonBounds(sf::RectangleShape btn) {
 
 void Lobby::update(sf::Event e,Client &c, Server &s)
 {
+	Config::isPongPlaying = startGame;
 	if (!Config::TCPstart) {
 		b->update();
 	}
@@ -116,6 +117,7 @@ void Lobby::update(sf::Event e,Client &c, Server &s)
 				FillButtonList(b->getConns());
 			}
 		}
+
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x + 1, sf::Mouse::getPosition().y));
 		sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition().x - 1, sf::Mouse::getPosition().y));
 	}
@@ -143,23 +145,21 @@ Lobby::Lobby(sf::RenderWindow& rw, std::string name):rw(rw)
 		b = new Broadcaster(name);
 	else
 		b = new Broadcaster();
+	startGame = false;
 
 	font.loadFromFile("DroidSansMono.ttf");
 	pageNumber = 1;
 	yOffest = 0;
 	buttonWidth = 200;
 	buttonHeight = rw.getDefaultView().getSize().y / 5;
-	if(Config::isServer)
-		SelectedIP = sf::IpAddress("0.0.0.2");
-	else
-		SelectedIP = sf::IpAddress("0.0.0.1");
+	SelectedIP = sf::IpAddress("0.0.0.1");
 
 	paginationBttns.push_back(AddButton("Prev","", buttonWidth, rw.getSize().y - buttonHeight));
 	paginationBttns.push_back(AddButton("Next","", rw.getSize().x - buttonWidth, rw.getSize().y - buttonHeight));
 	refreshBtn = AddButton("Refresh", "", rw.getSize().x - buttonWidth, 0);
 	EnableButton();
 	playBtn = AddButton("Play", rw.getSize().x - buttonWidth, rw.getSize().y- buttonHeight);
-	if (Config::isServer) PlayButtonVisible(false);
+	if (!Config::isServer) PlayButtonVisible(false);
 }
 
 void Lobby::FillButtonList(std::vector<serverTuple> connections) {
@@ -215,7 +215,7 @@ ButtonTuple Lobby::AddButton(std::string name, float x, float y) {
 	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::Blue);
 
-	return std::make_tuple(button, text, false);
+	return std::make_tuple(button, text, true);
 }
 
 Lobby::~Lobby()

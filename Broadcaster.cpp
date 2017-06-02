@@ -45,7 +45,6 @@ Broadcaster::Broadcaster( const std::string &serverName) : serverName(serverName
 		throw "Coudn't bind broadcast socket";
 	}
 	else {
-		//conns.push_back(std::make_tuple("0.0.0.0", "asd", STATES::FAILED, Config::clock.getElapsedTime().asMilliseconds()));
 		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
 		socket.setBlocking(false);
 	}

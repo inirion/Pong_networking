@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 	sf::Vector2f(2, 2);
 	sf::RenderWindow window(sf::VideoMode(800,600), "TCP TEST", sf::Style::Default);
 	window.setVerticalSyncEnabled(true);
-	Pong *pong;
+	Pong *pong = new Pong(window);
 	Client c;
 	Server s;
 	std::string serverName;
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 			window.draw(l);
 		}
 		if (Config::isPongPlaying) {
-			pong->update();
+			pong->update(e,c,s);
 			window.draw(*pong);
 		}
 		

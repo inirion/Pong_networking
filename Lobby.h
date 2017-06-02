@@ -27,6 +27,10 @@ enum Fields { BUTTON, TEXT, VISIBILITY, IP };
 class Lobby:public sf::Drawable
 {
 private:
+	enum LobbyStates {
+		PLAYPRESSED,
+		STARTGAME
+	};
 	unsigned short pageNumber;
 	sf::IpAddress SelectedIP;
 	int yOffest;
@@ -46,6 +50,7 @@ private:
 	ConnectionButton refreshBtn;
 	ButtonTuple playBtn;
 public:
+	bool startGame;
 	Broadcaster *b;
 	void SendStartButtonClick(sf::Event e, Client &c, Server &s);
 	void GetStartButtonClick(Client &c, Server &s);

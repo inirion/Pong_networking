@@ -8,62 +8,62 @@ void Pong::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	ball->draw(target, states);
 }
 
-void Pong::update()
-{
-	sf::Packet packet;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		if (Config::isServer) {
-			packet << *player1 << 1;
-			client.Send(packet);
-		}
-		else {
-			packet << *player2 << 1;
-			client.Send(packet);
-		}
-	}
-	
+void Pong::update(sf::Event e, Client &c, Server &s)
+{	
 	if (Config::isServer) {
 		player1->update();
 		ball->update();
 		Collision();
-		packet << *ball << 2;
-		client.Send(packet);
 	}
 	else {
 		player2->update();
 	}
+	if (Config::clock.getElapsedTime().asMilliseconds() - lastFrameTime >= 1000) {
+		SendData(c, s);
+		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
+	}
+	
+	RecvData(c, s);
+	
+}
 
-	switch (client.Recive()) {
-	case sf::Socket::Done: {
-		if (Config::isServer) {
-			player2->readFromPacket(client.getPacket());
-			int x;
-			client.getPacket() >> x >> x >> x;
-			if(x == 1)
-			player2->movePaddle();
-		}
-		else {
-			player1->readFromPacket(client.getPacket());
-			int x;
-			client.getPacket() >> x >> x >> x;
-			if (x == 1)
-			player1->movePaddle();
-			switch (client.Recive()) {
-			case sf::Socket::Done: {
-				ball->readFromPacket(client.getPacket());
-				int x;
-				client.getPacket() >> x >> x >> x;
-				if (x == 2)
-				ball->moveBall();
-			}break;
-			}
-			
+void Pong::SendData(Client &c, Server &s)
+{
+	
+	if (Config::isServer) {
+		sf::Packet p1;
+		int value = 1;
+		p1 << value;
+		if (s.Send(p1)) std::cout << " SerwerSend Success" << std::endl;
+		else std::cout << " SerwerSend error" << std::endl;
+	}
+	else {
+		sf::Packet p2;
+		int value = 1;
+		p2 << value;
+		if (c.Send(p2)) std::cout << " KlientSend Success" << std::endl;
+		else std::cout << " KlientSend error" << std::endl;
+		
+	}
+}
+
+void Pong::RecvData(Client &c, Server &s)
+{
+	sf::Packet p;
+	if (Config::isServer) {
+		if (s.Recive()) {
+			int a;
+			s.getPacket() >> a;
+			std::cout << a << std::endl;
 		}
 	}
-		break;
-	};
-	
-	
+	else {
+		if (c.Recive()) {
+			int b;
+			c.getPacket() >> b;
+			std::cout << b << std::endl;
+		}
+	}
 }
 
 void Pong::Collision()
@@ -119,7 +119,7 @@ void Pong::Collision()
 	}
 }
 
-Pong::Pong(sf::RenderWindow & window, Client &c) : rw(window), client(c)
+Pong::Pong(sf::RenderWindow & window) : rw(window)
 {
 	player1 = new Paddle(window,false);
 	player2 = new Paddle(window,true);

@@ -22,6 +22,7 @@ public:
 	inline sf::Packet& getPacket() {
 		return this->packet;
 	}
+	inline void clearPacket() { packet.clear(); }
 
 
 	Networking(const unsigned short port) :port(port) {} ;
