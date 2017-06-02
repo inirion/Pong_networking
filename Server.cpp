@@ -12,10 +12,10 @@ bool Server::Send(sf::Packet packet)
 	else return false;
 }
 
-bool Server::Recive()
+bool Server::Recive(sf::Packet& packet)
 {
 	packet.clear();
-	if (socket.receive(this->packet) == sf::TcpSocket::Done) return true;
+	if (socket.receive(packet) == sf::TcpSocket::Done) return true;
 	else return false;
 }
 

@@ -100,10 +100,11 @@ void Broadcaster::printConns()
 
 serverTuple Broadcaster::onNewConnection()
 {
-	if (Recive()) {
+	sf::Packet p;
+	if (Recive(p)) {
 		int ENUM;
 		std::string name;
-		packet >> ENUM >> name;
+		p >> ENUM >> name;
 		return std::make_tuple(incomingConnectionAddress, name, (STATES)ENUM, mticks());
 	}
 
@@ -113,7 +114,7 @@ serverTuple Broadcaster::onNewConnection()
 	}
 }
 
-bool Broadcaster::Recive()
+bool Broadcaster::Recive(sf::Packet& packet)
 {
 	unsigned short port;
 	if (socket.receive(packet, incomingConnectionAddress, port) == sf::UdpSocket::Done) {

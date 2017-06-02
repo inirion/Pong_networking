@@ -24,10 +24,11 @@ void Lobby::SendStartButtonClick(sf::Event e, Client &c, Server &s)
 
 void Lobby::GetStartButtonClick(Client & c, Server & s)
 {
+	sf::Packet p;
 	if (!Config::isServer) 
-		if (c.Recive()) {
+		if (c.Recive(p)) {
 			int a;
-			c.getPacket() >> a;
+			p >> a;
 			if (0 == a) {
 				startGame = true;
 			}

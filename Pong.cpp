@@ -42,23 +42,23 @@ void Pong::SendData(Client &c, Server &s)
 		p2 << value;
 		if (c.Send(p2)) std::cout << " KlientSend Success" << std::endl;
 		else std::cout << " KlientSend error" << std::endl;
-		
 	}
 }
 
 void Pong::RecvData(Client &c, Server &s)
 {
+	sf::Packet p;
 	if (Config::isServer) {
-		if (s.Recive()) {
+		if (s.Recive(p)) {
 			int a;
-			s.getPacket() >> a;
+			if(p >> a)
 			std::cout << a << std::endl;
 		}
 	}
 	else {
-		if (c.Recive()) {
+		if (c.Recive(p)) {
 			int b;
-			c.getPacket() >> b;
+			if(p >> b)
 			std::cout << b << std::endl;
 		}
 	}

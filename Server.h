@@ -14,7 +14,7 @@ public:
 	bool setConnection();
 
 	bool Send(sf::Packet)override;
-	bool Recive() override;
+	bool Recive(sf::Packet&) override;
 	Server();
 	~Server();
 };

@@ -11,7 +11,7 @@ public:
 
 	bool setConnection(sf::IpAddress);
 	bool Send(sf::Packet)override;
-	bool Recive() override;
+	bool Recive(sf::Packet&) override;
 
 	Client();
 	~Client();

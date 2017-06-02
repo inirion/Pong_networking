@@ -13,7 +13,7 @@ protected:
 
 public:
 	virtual bool Send(sf::Packet) = 0;
-	virtual bool Recive() = 0;
+	virtual bool Recive(sf::Packet&) = 0;
 
 
 	inline sf::Packet& operator <<(sf::Packet& packet) {
