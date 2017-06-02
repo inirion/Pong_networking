@@ -56,18 +56,18 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		else {
-			if (!Config::isServer) {
+			if (Config::isServer) {
 				std::string name;
 				std::cout << "wpisz jakiegos stringa" << std::endl;
 				cin >> name;
 				sf::Packet p;
 				p << name;
-				if (c.Send(p)) std::cout << "Wys³ano" << std::endl;
+				if (s.Send(p)) std::cout << "Wys³ano" << std::endl;
 			}
 			else {
-				if (s.Recive()) {
+				if (c.Recive()) {
 					std::string a;
-					s.getPacket() >> a;
+					c.getPacket() >> a;
 					std::cout << a << std::endl;
 				}
 			}
