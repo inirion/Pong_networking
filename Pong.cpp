@@ -18,7 +18,7 @@ void Pong::update(sf::Event e, Client &c, Server &s)
 	else {
 		player2->update();
 	}
-	if (Config::clock.getElapsedTime().asMilliseconds() - lastFrameTime >= 1000) {
+	if (Config::clock.getElapsedTime().asMilliseconds() - lastFrameTime >= 10) {
 		SendData(c, s);
 		lastFrameTime = Config::clock.getElapsedTime().asMilliseconds();
 	}
@@ -48,7 +48,7 @@ void Pong::RecvData(Client &c, Server &s)
 	sf::Packet p;
 	if (Config::isServer) {
 		if (s.Recive(p)) {
-			int x1, y1;
+			float x1, y1;
 			if (p >> x1 >> y1) {
 				player2->setPosition(sf::Vector2f(x1, y1));
 				player2->movePaddle();
@@ -57,7 +57,7 @@ void Pong::RecvData(Client &c, Server &s)
 	}
 	else {
 		if (c.Recive(p)) {
-			int x1, x2, y1, y2;
+			float x1, x2, y1, y2;
 			if (p >> x1 >> y1 >> x2 >> y2) {
 				player1->setPosition(sf::Vector2f(x1, y1));
 				player1->movePaddle();
