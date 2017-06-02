@@ -29,7 +29,6 @@ void Pong::update(sf::Event e, Client &c, Server &s)
 
 void Pong::SendData(Client &c, Server &s)
 {
-	
 	if (Config::isServer) {
 		sf::Packet p1;
 		int value = 1;
@@ -49,7 +48,6 @@ void Pong::SendData(Client &c, Server &s)
 
 void Pong::RecvData(Client &c, Server &s)
 {
-	sf::Packet p;
 	if (Config::isServer) {
 		if (s.Recive()) {
 			int a;
