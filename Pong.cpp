@@ -31,15 +31,13 @@ void Pong::SendData(Client &c, Server &s)
 {
 	if (Config::isServer) {
 		sf::Packet p1;
-		int value = 1;
-		p1 << value;
+		p1 << player1->getPosition().x << player1->getPosition().y << ball->getPosition().x << ball->getPosition().y;
 		if (s.Send(p1)) std::cout << " SerwerSend Success" << std::endl;
 		else std::cout << " SerwerSend error" << std::endl;
 	}
 	else {
 		sf::Packet p2;
-		int value = 1;
-		p2 << value;
+		p2 << player2->getPosition().x << player2->getPosition().y;
 		if (c.Send(p2)) std::cout << " KlientSend Success" << std::endl;
 		else std::cout << " KlientSend error" << std::endl;
 	}
@@ -50,16 +48,23 @@ void Pong::RecvData(Client &c, Server &s)
 	sf::Packet p;
 	if (Config::isServer) {
 		if (s.Recive(p)) {
-			int a;
-			if(p >> a)
-			std::cout << a << std::endl;
+			int x1, y1;
+			if (p >> x1 >> y1) {
+				player2->setPosition(sf::Vector2f(x1, y1));
+				player2->movePaddle();
+			}
 		}
 	}
 	else {
 		if (c.Recive(p)) {
-			int b;
-			if(p >> b)
-			std::cout << b << std::endl;
+			int x1, x2, y1, y2;
+			if (p >> x1 >> y1 >> x2 >> y2) {
+				player1->setPosition(sf::Vector2f(x1, y1));
+				player1->movePaddle();
+				ball->setPosition(sf::Vector2f(x2, y2));
+				ball->moveBall();
+			}
+			
 		}
 	}
 }
