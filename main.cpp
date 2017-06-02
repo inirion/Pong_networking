@@ -58,25 +58,28 @@ int main(int argc, char* argv[]) {
 		if (!Config::isPongPlaying) {
 			l.update(e,c,s);
 			window.draw(l);
-		}
-		if (Config::isPongPlaying) {
-			if (!Config::isServer) {
-				std::string name;
-				std::cout << "wpisz jakiegos stringa" << std::endl;
-				cin >> name;
-				sf::Packet p;
-				p << name;
-				if (c.Send(p)) std::cout << "Wys³ano" << std::endl;
-			}
-			else {
-				if (s.Recive()) {
-					std::string a;
-					s.getPacket() >> a;
-					std::cout << a << std::endl;
+			if (Config::TCPstart) {
+				if (!Config::isServer) {
+					std::string name;
+					std::cout << "wpisz jakiegos stringa" << std::endl;
+					cin >> name;
+					sf::Packet p;
+					p << name;
+					if (c.Send(p)) std::cout << "Wys³ano" << std::endl;
+				}
+				else {
+					if (s.Recive()) {
+						std::string a;
+						s.getPacket() >> a;
+						std::cout << a << std::endl;
+					}
 				}
 			}
-			pong->update(e,c,s);
-			window.draw(*pong);
+		}
+		if (Config::isPongPlaying) {
+			
+			//pong->update(e,c,s);
+			//window.draw(*pong);
 		}
 		
 		window.display();
