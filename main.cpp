@@ -61,7 +61,6 @@ int main(int argc, char* argv[]) {
 			pong->update(e,c,s);
 			window.draw(*pong);
 		}
-		
 		window.display();
 	}
 	return 0;

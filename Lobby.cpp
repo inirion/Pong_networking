@@ -82,6 +82,8 @@ void Lobby::update(sf::Event e,Client &c, Server &s)
 		b->update();
 	}
 	else {
+		if(Config::isServer)
+		PlayButtonVisible(true);
 		SendStartButtonClick(e, c, s);
 		GetStartButtonClick(c, s);
 	}
@@ -92,7 +94,7 @@ void Lobby::update(sf::Event e,Client &c, Server &s)
 			if (ButtonVisability(btn)) {
 				if (InButtonBounds(Button(btn))) {
 					SelectedIP = ButtonIP(btn);
-					PlayButtonVisible(true);
+					
 				}
 			}
 		}
@@ -160,7 +162,6 @@ Lobby::Lobby(sf::RenderWindow& rw, std::string name):rw(rw)
 	refreshBtn = AddButton("Refresh", "", rw.getSize().x - buttonWidth, 0);
 	EnableButton();
 	playBtn = AddButton("Play", rw.getSize().x - buttonWidth, rw.getSize().y- buttonHeight);
-	if (!Config::isServer) PlayButtonVisible(false);
 }
 
 void Lobby::FillButtonList(std::vector<serverTuple> connections) {
@@ -216,7 +217,7 @@ ButtonTuple Lobby::AddButton(std::string name, float x, float y) {
 	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::Blue);
 
-	return std::make_tuple(button, text, true);
+	return std::make_tuple(button, text, false);
 }
 
 Lobby::~Lobby()
